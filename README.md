@@ -159,4 +159,4 @@ This study is motivated by Prof. Mohammed Elamassie and collaborators' work on a
 
 The model excludes atmospheric scintillation, finite detector noise, nonzero boresight error, correlated weather and experimental receiver calibration. A useful next step would be to estimate weather-scenario probabilities from a specific location and season and test whether receiver designs remain reliable out of sample.
 
-**Development transparency:** Early code and documentation were prepared with AI assistance. All results are generated from the included scripts; any scientific interpretation should be independently checked before reuse. MIT-licensed source code is provided as a learning and research-preparation resource.
+**Development note:** AI tools were used to assist with code development, documentation and visualization. The repository provides the mathematical formulations, references, numerical verification tests and reproducible results for technical review.
