@@ -1,0 +1,164 @@
+{
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 2618,
+      "sha256": "933de33b2b36e6f8b16a5119cb62e051c458efb389de09d2c2f39d09f4f976cd"
+    },
+    {
+      "path": "figures/01_aperture_integral_validation.png",
+      "bytes": 68861,
+      "sha256": "eb026b044246bafdf18fcfa815b15844b86d382d286f097580f257973e3853b4"
+    },
+    {
+      "path": "figures/01_aperture_integral_validation.svg",
+      "bytes": 42368,
+      "sha256": "e7493d49d368eb5ffabd947d9635d6d19aa6711d030b27af36323764862cf944"
+    },
+    {
+      "path": "figures/02_atmospheric_unit_interpretations.png",
+      "bytes": 56314,
+      "sha256": "ba605ebd43f5b9707568f10af3b9287ed955e2bd1037e700ce9be5b8bac47ee7"
+    },
+    {
+      "path": "figures/02_atmospheric_unit_interpretations.svg",
+      "bytes": 40906,
+      "sha256": "a927541d5f636f13ea6f1e98f09a8ed4e0758ef39c7e8a5a58e7674475e87258"
+    },
+    {
+      "path": "figures/03_availability_vs_aperture.png",
+      "bytes": 116596,
+      "sha256": "f823279e985ecb183123280165f334e67eb48ed5783eac344f8bc033dd0cf3bd"
+    },
+    {
+      "path": "figures/03_availability_vs_aperture.svg",
+      "bytes": 59880,
+      "sha256": "ecd0a4263bb2ce7de6a71264c406b15a0450f215638c93554083f1ca5e06eed8"
+    },
+    {
+      "path": "figures/04_minimum_aperture_frontier.png",
+      "bytes": 87579,
+      "sha256": "1e8d77761f3c3868a21afd1491fa52c519021450dcc32e7e7160b8c559215894"
+    },
+    {
+      "path": "figures/04_minimum_aperture_frontier.svg",
+      "bytes": 46801,
+      "sha256": "7560e4ace73ddd998a9dfebe8e925685e3afcb8d2bc70b0a37b829fb8e1f7bd2"
+    },
+    {
+      "path": "figures/05_weather_probability_shift.png",
+      "bytes": 84133,
+      "sha256": "404856beffd155a76f9adbb6f1538dd1698468eb3ad5c8b60b8f4deb7f3a827b"
+    },
+    {
+      "path": "figures/05_weather_probability_shift.svg",
+      "bytes": 47170,
+      "sha256": "6bc53ba22ad4cbc411964b2f762461097e004621e23c3d6423baa55683d53013"
+    },
+    {
+      "path": "figures/06_design_feasibility_map.png",
+      "bytes": 77230,
+      "sha256": "4b388e2273f97d3d3329e318e77294ba6a78ee704ed7b2630d3b531dec459b31"
+    },
+    {
+      "path": "figures/06_design_feasibility_map.svg",
+      "bytes": 54588,
+      "sha256": "ba50a399cb6a0421e775d044cab381d54eacb9b0c89063b015baea7c4d3cafe7"
+    },
+    {
+      "path": "figures/07_ablation.png",
+      "bytes": 64452,
+      "sha256": "d95afddeec88843e525879a1685ea906777646fa498f888e5f162bfcfe7b3112"
+    },
+    {
+      "path": "figures/07_ablation.svg",
+      "bytes": 47366,
+      "sha256": "97846994973a6d6535128a4536b66a798788e6feaf543a1133fec3e6448941bd"
+    },
+    {
+      "path": "figures/08_monte_carlo_validation.png",
+      "bytes": 52051,
+      "sha256": "5b20143c7c009374424b4231cfa75426a522eeae4de1b0bc9b77e228b960eebd"
+    },
+    {
+      "path": "figures/08_monte_carlo_validation.svg",
+      "bytes": 38866,
+      "sha256": "cbf31ecc4a71939241067718bbd787edf3ccdfba1cef9d64586038b7cf56ef29"
+    },
+    {
+      "path": "figures/09_atmospheric_feasibility_ceiling.png",
+      "bytes": 109048,
+      "sha256": "9a37d63cccb6a1b31aa778883d4bae600449bdbf340905438573aef8f4b58d0d"
+    },
+    {
+      "path": "figures/09_atmospheric_feasibility_ceiling.svg",
+      "bytes": 60104,
+      "sha256": "1a28aad5a757d3d4670a3522fc67c2addadf24ea82708abfdd797c9cb19d50a6"
+    },
+    {
+      "path": "figures/10_optimization_convention_sensitivity.png",
+      "bytes": 130570,
+      "sha256": "03fa4a7198c0fb860e0d81e359353371d104d80ef26a1117c3ac64ae2458cadc"
+    },
+    {
+      "path": "figures/10_optimization_convention_sensitivity.svg",
+      "bytes": 78190,
+      "sha256": "9f7c410a495fd0a40d644ac221c3acf06ff423c669435f0638c7b351363910c0"
+    },
+    {
+      "path": "metadata/environment.json",
+      "bytes": 165,
+      "sha256": "56337d5c18f101c4fcec6b1b2eed23b8837e184d9992d902ff2db103fb13ecc5"
+    },
+    {
+      "path": "metadata/run_config.json",
+      "bytes": 1179,
+      "sha256": "0850fd5ed34d4d7539249f3506e4af1299d61d6248a6550c243e289f82dfb306"
+    },
+    {
+      "path": "metadata/runtime.json",
+      "bytes": 225,
+      "sha256": "3ce2d362837beacb45c87e396f8e9cb57f4459779da8196019f283ea152f03c7"
+    },
+    {
+      "path": "tables/01_weather_scenarios_and_conventions.csv",
+      "bytes": 897,
+      "sha256": "ff6bb209f25cb77e3a0cc430b78a31090e8a62ea09c20884535a1efd4f5a29fd"
+    },
+    {
+      "path": "tables/02_minimum_aperture_frontier.csv",
+      "bytes": 1305,
+      "sha256": "d9883b0d6df879e2a299afea53218ffe4e38db93a8c34df265a16d570e9f92a5"
+    },
+    {
+      "path": "tables/03_tv_radius_sensitivity.csv",
+      "bytes": 1384,
+      "sha256": "061830f745b79c444fb7e5568137ec6cd77967be4c40a0198e50c42b72b3a73b"
+    },
+    {
+      "path": "tables/04_ablation.csv",
+      "bytes": 3443,
+      "sha256": "22e74d54f22543395c0ec85313f86c30ca588d0a4d97f0dc0fa55c315717d91c"
+    },
+    {
+      "path": "tables/05_monte_carlo_verification.csv",
+      "bytes": 469,
+      "sha256": "ea6e6d484ed5a35285e2f4da3c106725fcff4b0d831741c6449a3dea34d7eb10"
+    },
+    {
+      "path": "tables/06_alternate_illustrative_weather_priors.csv",
+      "bytes": 756,
+      "sha256": "67e33b31ce2dbccde44337cdaaa9ed8607b4d2d42aa0756e5d36c96d479dc530"
+    },
+    {
+      "path": "tables/07_atmospheric_feasibility_ceiling.csv",
+      "bytes": 3827,
+      "sha256": "350e993edd9d46579b2b116586f9632b01924d782e3132257789315fbf6beae2"
+    },
+    {
+      "path": "tables/08_optimization_convention_sensitivity.csv",
+      "bytes": 404,
+      "sha256": "5f79332e5535060399efea91c675a205841e6c2cc9dcd1198b3027d4c9f78af2"
+    }
+  ]
+}

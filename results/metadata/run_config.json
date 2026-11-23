@@ -1,0 +1,40 @@
+{
+  "paper_source": "https://doi.org/10.1109/MVT.2026.3687349",
+  "arxiv_manuscript": "https://arxiv.org/abs/2604.18207",
+  "paper_table_II_finite_states": true,
+  "weather_scenario_priors_empirically_estimated": false,
+  "weather_prior_order": [
+    "clear",
+    "pollution",
+    "fog",
+    "rain",
+    "snow"
+  ],
+  "weather_prior_values": [
+    0.76,
+    0.1,
+    0.07,
+    0.04,
+    0.03
+  ],
+  "reference_link": {
+    "altitude_km": 3.0,
+    "zenith_deg": 0.0,
+    "tx_mw": 50.0,
+    "optical_efficiency": 0.7,
+    "threshold_mw": 2.0,
+    "beam_waist_m": 0.025,
+    "divergence_urad": 55.0,
+    "convention": "paper_exponential"
+  },
+  "target_availability": 0.92,
+  "tv_radius": 0.04,
+  "monte_carlo_seed_base": 20261123,
+  "fast_mode": true,
+  "monte_carlo_samples_max": 20000,
+  "method": "exact conditional mixture + Rayleigh jitter CDF + TV mass transfer; independent scipy linprog and random draws",
+  "receiver_power_threshold_is_illustrative_not_device_data": true,
+  "propagation_convention_primary": "paper_exponential",
+  "end_to_end_sensitivity_in_both_conventions": true,
+  "note": "Only single-link optical-power availability; not BER or field reliability."
+}

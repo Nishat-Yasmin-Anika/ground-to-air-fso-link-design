@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this research-preparation code, please cite the repository and the atmospheric model source separately."
+title: "Uncertainty-aware receiver design for ground-to-air FSO links"
+type: software
+authors:
+  - family-names: "Anika"
+    given-names: "Nishat Yasmin"
+    website: "https://scholar.google.com/citations?hl=en&user=K0-97vkAAAAJ"
+date-released: 2026-11-23
+license: MIT
+keywords:
+  - free-space optical communication
+  - optical receiver aperture
+  - atmospheric attenuation
+  - pointing errors
+  - robust optimization

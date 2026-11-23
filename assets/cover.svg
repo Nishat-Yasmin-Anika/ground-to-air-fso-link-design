@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 544" role="img" aria-labelledby="heading subheading">
+<title id="heading">Free-space optical link design research cover</title><desc id="subheading">A laser link passing between atmospheric layers and a high-altitude aerial platform, with an abstract receiver pattern.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#071A2C"/><stop offset=".64" stop-color="#0A253B"/><stop offset="1" stop-color="#143C4F"/></linearGradient>
+  <linearGradient id="beam" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#F6D78B"/><stop offset=".56" stop-color="#5DE7E0"/><stop offset="1" stop-color="#D2FFFF"/></linearGradient>
+  <radialGradient id="halo"><stop offset="0" stop-color="#70E2E3" stop-opacity=".23"/><stop offset="1" stop-color="#70E2E3" stop-opacity="0"/></radialGradient>
+  <pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse"><path d="M36 0H0V36" fill="none" stroke="#86B6C9" stroke-width=".8" opacity=".07"/></pattern>
+  <filter id="soft"><feGaussianBlur stdDeviation="11"/></filter>
+</defs>
+<rect width="1440" height="544" rx="23" fill="url(#bg)"/>
+<rect width="1440" height="544" rx="23" fill="url(#grid)"/>
+<g opacity=".28" stroke="#9CD0DA" stroke-dasharray="3 10"><path d="M765 110H1400"/><path d="M765 205H1400"/><path d="M765 300H1400"/><path d="M765 393H1400"/></g>
+<g font-family="Arial, Helvetica, sans-serif">
+ <rect x="75" y="75" width="230" height="31" rx="15.5" fill="#153D50" stroke="#39778A" stroke-width="1"/>
+ <circle cx="96" cy="90" r="4" fill="#65E7D9"/><text x="111" y="95" fill="#BFDFE5" font-size="12" font-weight="700" letter-spacing="2">NUMERICAL STUDY</text>
+ <text x="75" y="173" fill="#F8FCFD" font-size="55" font-weight="700" letter-spacing="-.8">Ground-to-air</text>
+ <text x="75" y="231" fill="#F8FCFD" font-size="55" font-weight="700" letter-spacing="-.8">optical links</text>
+ <text x="75" y="277" fill="#70DCD7" font-size="22" letter-spacing=".2">Designing for uncertainty</text>
+ <text x="75" y="333" fill="#A9CBD4" font-size="18">Atmospheric layers · pointing jitter</text>
+ <text x="75" y="361" fill="#A9CBD4" font-size="18">receiver geometry · robust availability</text>
+ <path d="M75 395H653" stroke="#497A88" stroke-width="1" opacity=".55"/>
+ <text x="75" y="430" fill="#F2F7F8" font-size="15" font-weight="700">Nishat Yasmin Anika</text>
+ <text x="75" y="456" fill="#89BAC4" font-size="13" letter-spacing="1.4">FSO  /  PYTHON  /  REPRODUCIBLE METHODS</text>
+</g>
+<g>
+ <circle cx="1073" cy="257" r="247" fill="url(#halo)"/>
+ <path d="M784 398H1395" stroke="#92CBB3" stroke-width="1.5" opacity=".5"/>
+ <path d="M784 392Q907 366 1044 389T1395 379V505H784Z" fill="#163B48" opacity=".75"/>
+ <rect x="788" y="332" width="600" height="63" fill="#F5CC88" opacity=".055"/>
+ <rect x="788" y="266" width="600" height="66" fill="#91A4B1" opacity=".055"/>
+ <rect x="788" y="199" width="600" height="67" fill="#B7DAE6" opacity=".065"/>
+ <rect x="788" y="132" width="600" height="67" fill="#73DFE3" opacity=".045"/>
+ <g font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#81AEBD" letter-spacing="1.6">
+ <text x="1310" y="152">UPPER AIR</text><text x="1290" y="219">CLOUD LAYER</text><text x="1306" y="284">CLEAR AIR</text><text x="1319" y="354">FOG</text>
+ </g>
+ <path d="M944 406L1136 121" stroke="#61EFEB" stroke-width="16" opacity=".13" filter="url(#soft)"/>
+ <path d="M944 406L1136 121" stroke="url(#beam)" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="9 6"/>
+ <path d="M944 406L1136 121" stroke="#FCE6B2" stroke-width=".75" opacity=".8"/>
+ <g transform="translate(1136 120)">
+  <circle r="41" fill="none" stroke="#6DD9DE" stroke-opacity=".26" stroke-width="1.5"/>
+  <circle r="26" fill="none" stroke="#6DD9DE" stroke-opacity=".42" stroke-width="1.2" stroke-dasharray="3 4"/>
+  <path d="M-38 0H38 M0 -36V36" stroke="#A7DFE0" stroke-width="1.2" opacity=".45"/>
+  <path d="M-32 -2H32 M-15 -12L15 12 M-15 12L15 -12" stroke="#DAFAF6" stroke-width="2"/>
+  <rect x="-13" y="-9" width="26" height="18" rx="4" fill="#71D7D9" stroke="#D2FAF6" stroke-width="1.5"/>
+  <circle r="4" fill="#0A2A3F"/>
+ </g>
+ <g transform="translate(944 407)" stroke="#C0E5E9" fill="none" stroke-width="2.4">
+  <path d="M-30 0L0 -45L30 0M-20 0H20 M-14 -11H14"/>
+  <path d="M-15 -26L0 -33L14 -26" stroke="#E8CE90"/>
+  <rect x="-38" y="0" width="76" height="9" rx="2" fill="#335D69" stroke="#A2DBD1"/>
+ </g>
+ <g fill="#B5E8E6" opacity=".65"><circle cx="1045" cy="257" r="2.5"/><circle cx="1090" cy="190" r="2.5"/><circle cx="987" cy="342" r="2.5"/></g>
+ <g font-family="Arial, Helvetica, sans-serif" font-size="12" fill="#C5E8E9"><text x="1162" y="95">AERIAL PLATFORM</text><text x="992" y="445">GROUND TERMINAL</text></g>
+ <g transform="translate(1190 403)" fill="none" stroke="#77E2DC" stroke-opacity=".42">
+  <circle r="58"/><circle r="37"/><circle r="17"/><path d="M-70 0H70M0 -70V70"/>
+ </g>
+</g>
+</svg>
