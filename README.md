@@ -83,7 +83,7 @@ The model is deliberately limited to *received optical-power availability* for o
 For an offset Gaussian beam with $1/e^2$ intensity radius $w$, aperture radius $a$ and displacement $r$, the collected-power fraction is a noncentral chi-squared cumulative distribution function:
 
 $$
-G(a,r,w)=F_{\chi^{\prime 2}_{2}(\lambda)}\\left(\frac{4a^2}{w^2}\right),\qquad\lambda=\frac{4r^2}{w^2}.
+G(a,r,w)=F_{\chi^{\prime 2}_{2}(\lambda)}\left(\frac{4a^2}{w^2}\right),\qquad\lambda=\frac{4r^2}{w^2}.
 $$
 
 With atmospheric transmittance $T_{\mathrm{atm}}$, optical efficiency $\eta_{\mathrm{opt}}$ and radial pointing displacement $R$, received optical power and modeled availability are
