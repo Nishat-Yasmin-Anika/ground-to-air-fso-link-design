@@ -2,7 +2,7 @@
 
 ## [S1] Atmospheric model: professor and collaborators
 
-E. Erdogan, M. Elamassie, I. Altunbas, G. K. Kurt, M. Uysal and H. Yanikomeroglu. *Modeling Atmospheric Attenuation in Vertical FSO Links: An Altitude-Aware Piecewise Framework*. IEEE Vehicular Technology Magazine, 2026. DOI: https://doi.org/10.1109/MVT.2026.3687349. Free author manuscript: https://arxiv.org/pdf/2604.18207 .
+E. Erdogan, M. Elamassie, I. Altunbas, G. K. Kurt, M. Uysal and H. Yanikomeroglu. *Modeling Atmospheric Attenuation in Vertical FSO Links: An Altitude-Aware Piecewise Framework*. IEEE Vehicular Technology Magazine, 2026. DOI: https://doi.org/10.1109/MVT.2026.3687349. Earlier author manuscript: https://arxiv.org/abs/2604.18207 , titled *A Novel Piecewise Atmospheric Attenuation Model for Free Space Optical Links in Vertical Heterogeneous Networks* (arXiv:2604.18207). The journal article uses the updated title cited above.
 
 **Actually used:** Section III piecewise atmospheric exponential, Table I (1550 nm coefficient glossary) and Table II (five scenarios, geometric layers, conditional state weights), implemented in `src/atmosphere.py`. Main figures use `exp(-Q)` to trace equations; comparative dimensional audit retains `10^(-Q/10)` because coefficient tables are labeled dB/km. **The source itself is not experimentally reproduced here; there are no MODTRAN outputs or source figure digitalizations.**
 
@@ -14,11 +14,11 @@ M. Elamassie and M. Uysal, *Multi-Layer Airborne FSO Systems: Performance Analys
 
 **Conceptual motivation:** combine atmospheric, geometry and pointing effects and ask a design question. **Not reproduced:** their multi-hop topology, random HAPS motion, bit error-rate formulas or power allocation.
 
-## [S3] Active research group
+## [S3] Related research context (not a model source)
 
 TÜBİTAK 1001 — Project 125E806, Prof. M. Elamassie, Aug 2026–Aug 2029: https://faculty.ozyegin.edu.tr/mohammedelamassie/tubitak-1001-project-125e806/ .
 
-**Fit:** atmospheric modeling, optical link reliability, pointing errors and optimization under changing conditions. **Do not present this project as part of the funded research.**
+**Context only:** These research topics overlap with the general themes of atmospheric modeling, optical-link reliability, pointing effects and optimization. The present repository is an independent portfolio study; it is not affiliated with that funded project and does not use its unpublished materials.
 
 ## [S4] Standard Gaussian FSO pointing model
 

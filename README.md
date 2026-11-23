@@ -35,6 +35,8 @@ It is an exploratory **single-link, received-power** model—not a calibrated FS
 
 The reference scenario is a **3 km vertical, 1550 nm** link with **15 microradians (µrad) per axis** angular pointing jitter and a **92% optical-power availability target**. Transmitter power, receiver threshold and the five weather-scenario frequencies are deliberately illustrative.
 
+**Choice of reference inputs.** The 3 km/1550 nm geometry, beam settings and power threshold define a numerical case in which atmospheric transmission, pointing error and aperture collection can all affect threshold success. The 92% target, weather frequencies and total-variation radii are sensitivity-test inputs, not measurements, equipment specifications, statistical confidence bounds or operational requirements. They should not be used to infer a practical receiver diameter without calibration.
+
 | Finding | Equation-as-printed convention | Literal dB/km convention |
 |:--|--:|--:|
 | Minimum nominal aperture diameter | **21.95 cm** | **9.47 cm** |
@@ -128,6 +130,8 @@ The script defaults to 20,000 Monte Carlo samples in its largest verification ru
 │   ├── TECHNICAL_NOTE.md
 │   ├── SOURCE_MAP.md
 │   └── COMPLEXITY_AND_VERIFICATION.md
+├── .github/workflows/
+│   └── python-tests.yml      # Automated numerical test suite
 ├── requirements.txt
 └── LICENSE
 ```
@@ -145,13 +149,13 @@ The script defaults to 20,000 Monte Carlo samples in its largest verification ru
 | Receiver dimension | Bracketed root finding | Monotonicity and feasibility tests |
 | Probability estimate | Exact finite-state mixture | Monte Carlo and 95% Wilson score intervals |
 
-The test suite contains **24 mathematical and implementation checks**. These establish internal numerical consistency, **not physical validation** against weather observations, receiver hardware or MODTRAN. Computation time and complexity are described in [`docs/COMPLEXITY_AND_VERIFICATION.md`](docs/COMPLEXITY_AND_VERIFICATION.md).
+The test suite contains **24 mathematical and implementation checks**. These establish internal numerical consistency, **not physical validation** against weather observations, receiver hardware or MODTRAN. The [Python tests workflow](.github/workflows/python-tests.yml) runs this suite automatically on pushes and pull requests. Computation time and complexity are described in [`docs/COMPLEXITY_AND_VERIFICATION.md`](docs/COMPLEXITY_AND_VERIFICATION.md).
 
 ### Connection to the literature
 
 This study is motivated by Prof. Mohammed Elamassie and collaborators' work on altitude-dependent optical attenuation and multi-layer airborne FSO performance. It extends those ideas into an **illustrative weather-distribution sensitivity and receiver-sizing exercise**; it does not reproduce their full communication-system models or claim a new analytical method.
 
-1. E. Erdogan, M. Elamassie, I. Altunbas, G. K. Kurt, M. Uysal and H. Yanikomeroglu, *Modeling Atmospheric Attenuation in Vertical FSO Links: An Altitude-Aware Piecewise Framework*, 2026. [DOI](https://doi.org/10.1109/MVT.2026.3687349) · [Author manuscript](https://arxiv.org/abs/2604.18207).
+1. E. Erdogan, M. Elamassie, I. Altunbas, G. K. Kurt, M. Uysal and H. Yanikomeroglu, *Modeling Atmospheric Attenuation in Vertical FSO Links: An Altitude-Aware Piecewise Framework*, 2026. [DOI](https://doi.org/10.1109/MVT.2026.3687349) · [Author manuscript](https://arxiv.org/abs/2604.18207). The arXiv version has an **earlier manuscript title**, as noted in the [source map](docs/SOURCE_MAP.md).
 2. M. Elamassie and M. Uysal, *Multi-Layer Airborne FSO Systems: Performance Analysis and Optimization*, *IEEE Transactions on Communications*, 2025. [DOI](https://doi.org/10.1109/TCOMM.2024.3471995).
 3. Source-specific implementation choices and additional method references are mapped in [`docs/SOURCE_MAP.md`](docs/SOURCE_MAP.md).
 

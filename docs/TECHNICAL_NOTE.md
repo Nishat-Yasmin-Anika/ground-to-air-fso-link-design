@@ -8,13 +8,13 @@
 
 Aerial free-space optical (FSO) links face heterogeneous atmospheric extinction and stochastic misalignment. This note formulates the receiver-aperture design problem when the *distribution of atmospheric scenarios itself is uncertain*. We adapt the altitude-resolved atmospheric scenario coefficients of Erdogan *et al.* (2026) and combine them with an exact Gaussian-beam circular-aperture integral. Under a specified zero-mean Gaussian pointing model, conditional optical-power availability is available from an inverse aperture-overlap calculation and a Rayleigh radial cumulative distribution. We optimize receiver size for nominal and total-variation distributionally robust weather mixtures, with exact finite-state probabilities instead of high-variance simulation-only estimates. Independent Bessel numerical quadrature, linear programming, Monte Carlo samples and analytic special cases validate the implementation internally. For an illustrative 3 km vertical link, a 92% availability target and 15 µrad per-axis jitter, the computed required receiver diameter changes from approximately 22 cm (nominal weather probabilities) to 27 cm when allowing a 4% weather-probability shift. These conclusions are **conditional on hypothetical device/meteorological inputs and a source coefficient-unit ambiguity**; they are not calibrated field reliability or verified equipment requirements.
 
-## 1. Motivation and specific contribution
+## 1. Motivation and study design
 
-The source paper [S1] characterizes atmospheric transmission of a vertical/slant beam through successive altitude bands. The professor's later/related work [S2] considers pointing and geometry in multi-hop airborne FSO systems. Our **intellectual extension** is to combine a physically interpretable exact aperture integral with the layered atmospheric categories and formulate a *chance-constrained design question under distributional uncertainty*:
+The source paper [S1] characterizes atmospheric transmission of a vertical/slant beam through successive altitude bands. Elamassie and Uysal [S2] examine geometry and pointing effects in multi-layer airborne FSO systems. This study combines a physically interpretable exact aperture integral with the layered atmospheric categories and formulate a *chance-constrained design question under distributional uncertainty*:
 
 > What is the smallest aperture diameter that maintains target *modeled optical-power availability* if a specified amount of probability may shift between five weather categories?
 
-Neither the distributionally robust optimization method nor the aperture formula is claimed as newly invented. The independent contribution is the transparent integration, exact conditional probability reduction, numerical verification and uncertainty/feasibility analysis in a small reproducible study.
+Neither the distributionally robust optimization method nor the aperture formula is claimed as newly invented. The focus is on transparent model integration, conditional probability reduction, numerical verification and sensitivity analysis within a reproducible case study.
 
 ## 2. Definitions and 1550 nm propagation assumptions
 
@@ -126,13 +126,15 @@ $$
 
 The inner finite-state optimization is solved by **probability-mass transfer**, with an independent **HiGHS linear-programming (LP)** check. The outer scalar aperture problem uses bracketed **Brent–Dekker root finding** and feasibility checks. The term *distributionally robust* refers to the mathematical ambiguity set; $\rho$ is **not** a measured uncertainty or confidence interval. These methods are established techniques, not novel algorithms claimed by this project.
 
-## 6. Required whole-design coefficient sensitivity
+## 6. Sensitivity to atmospheric coefficient interpretation
 
-The source's dB/km table and its `exp(-Q)` equations produce substantially different received-power factors. It is insufficient merely to compare the two transmittance conventions in a secondary plot. **We now solve the full aperture-design and atmospheric-ceiling problem under both interpretations** in Figure 10 and Table 08. At 15 microradians per-axis jitter and a 92% illustrative availability target, the equation-as-printed nominal/4% TV-robust diameters are 21.95/27.01 cm; the literal dB/km counterparts are about 9.47/11.82 cm. At 8% TV, the former is globally infeasible while the latter remains feasible (~13.62 cm). Thus, no convention-independent hardware sizing or global infeasibility claim can be made. A supervisor should not be presented with a universal 4.89% threshold; it is a conditional diagnostic result.
+The coefficient table's dB/km labels and the source's `exp(-Q)` equations imply different transmittance factors. Because this discrepancy propagates to receiver sizing, the complete aperture-design and atmosphere-limited feasibility calculations are evaluated under **both interpretations** (Figure 10 and Table 08). With 15 µrad per-axis jitter and a 92% illustrative availability target, the equation-as-printed model yields nominal and 4% TV-robust diameters of 21.95 cm and 27.01 cm; the literal dB/km interpretation yields approximately 9.47 cm and 11.82 cm. At 8% TV uncertainty, the equation-as-printed model is globally infeasible under the stated assumptions, while the alternative remains feasible (~13.62 cm). Therefore, neither the predicted receiver dimensions nor the atmospheric feasibility limit should be treated as convention-independent hardware requirements. The ~4.89% critical TV radius belongs **only** to the equation-as-printed convention in this illustrative case.
 
 ## 7. Case study, ablations and findings
 
 Default link: height 3 km, zenith 0°, nominal wavelength 1550 nm, transmitted optical power 50 mW, transmission efficiency 0.7, threshold 2 mW, initial beam radius 0.025 m, divergence 55 µrad, pointing jitter 15 µrad per axis, target availability 92%. These are **illustrative parameters**; no hardware provider or field dataset is implied.
+
+**Parameter-selection rationale.** The configuration defines a tractable threshold-limited example in which atmospheric extinction, pointing displacement and aperture geometry all contribute to changes in modeled availability. The nominal weather prior and TV radius are selected for scenario comparison, not statistically estimated from meteorological measurements. The optical parameters do not represent a verified commercial transmitter or receiver. The 92% target and 1 m design search bound are demonstration settings rather than a service-level agreement or a hardware design requirement.
 
 Results (model-computed; `results/tables/02_minimum_aperture_frontier.csv`):
 
