@@ -10,7 +10,6 @@
 
 <p align="center">
   <strong>Nishat Yasmin Anika</strong> · Electronics and Communication Engineering · Khulna University of Engineering &amp; Technology (KUET)<br />
-  <a href="https://scholar.google.com/citations?hl=en&amp;user=K0-97vkAAAAJ">Google Scholar</a> ·
   <a href="notebooks/FSO_Link_Design_Colab.ipynb">Colab notebook</a> ·
   <a href="docs/TECHNICAL_NOTE.md">Technical note</a> ·
   <a href="results/">Figures &amp; tables</a>
@@ -73,7 +72,26 @@ The reference scenario is a **3 km vertical, 1550 nm** link with **15 microradia
 </tr>
 </table>
 
-All plots are generated from the Python experiment script. The repository contains **10 figures** (PNG and SVG), **8 CSV tables**, model configuration, a run manifest and a numerical verification suite. [Browse all results →](results/)
+All plots are generated from the Python experiment script. The repository contains **10 figures** (PNG and SVG), **8 CSV tables**, model configuration, a run manifest and numerical verification checks. **[View the complete figure gallery and every data table](results/)**.
+
+### Mathematical model at a glance
+
+The model is deliberately limited to *received optical-power availability* for one ground-to-air link. Platform altitude is $H$, zenith angle is $\zeta$, and slant range is $L=H/\cos\zeta$.
+
+For an offset Gaussian beam with $1/e^2$ intensity radius $w$, aperture radius $a$ and displacement $r$, the collected-power fraction is a noncentral chi-squared cumulative distribution function:
+
+$$
+G(a,r,w)=F_{\chi^{\prime 2}_{2}(\lambda)}\!\left(\frac{4a^2}{w^2}\right),\qquad\lambda=\frac{4r^2}{w^2}.
+$$
+
+With atmospheric transmittance $T_{\mathrm{atm}}$, optical efficiency $\eta_{\mathrm{opt}}$ and radial pointing displacement $R$, received optical power and modeled availability are
+
+$$
+P_{\mathrm{rx}}=P_{\mathrm{tx}}\,\eta_{\mathrm{opt}}\,T_{\mathrm{atm}}\,G(a,R,w),\qquad
+A=\Pr(P_{\mathrm{rx}}\ge P_{\min}).
+$$
+
+The design minimizes $a$ subject to a target on the worst-case modeled availability over an assumed weather-probability set. The **full derivation, Rayleigh pointing model, total-variation constraint and numerical solvers** are documented in the [technical note](docs/TECHNICAL_NOTE.md). The [source-to-implementation map](docs/SOURCE_MAP.md) identifies which elements come from the literature and which are illustrative assumptions of this study.
 
 ### Reproduce the study
 

@@ -18,49 +18,113 @@ Neither the distributionally robust optimization method nor the aperture formula
 
 ## 2. Definitions and 1550 nm propagation assumptions
 
-FSO = free-space optical; UAV = unmanned aerial vehicle; HAPS = high-altitude platform station; NTN = non-terrestrial network; TV = total variation; CDF = cumulative distribution function; BER = bit error rate; MC = Monte Carlo; SD = standard deviation; LP = linear program; µrad = microradian; dB = decibel; dBm = decibels relative to one milliwatt; MODTRAN = MODerate resolution atmospheric TRANsmission software; SHA-256 = Secure Hash Algorithm 256-bit; ERA5 = fifth generation ECMWF atmospheric reanalysis.
+**Abbreviations.** FSO: free-space optical; UAV: unmanned aerial vehicle; HAPS: high-altitude platform station; NTN: non-terrestrial network; TV: total variation; CDF: cumulative distribution function; BER: bit error rate; MC: Monte Carlo; SD: standard deviation; LP: linear program; dB: decibel; dBm: decibels relative to one milliwatt; MODTRAN: MODerate resolution atmospheric TRANsmission software; SHA-256: Secure Hash Algorithm 256-bit; ERA5: fifth-generation ECMWF atmospheric reanalysis.
 
-We consider a **ground-to-air, single, straight optical path** of geometric length `L=H/cos(zeta)` for altitude `H` and zenith angle `zeta` from local vertical. Flat horizontal atmospheric slabs are adopted as an approximation. Let `d_j` be the beam distance in atmospheric slab j. At 1550 nm, the five *conditional* scenarios and the within-slab coefficients/weights come from [S1] Table II. We represent each slab's weather state by `C_j`, independently across slabs for numerical tractability; this is a **new assumption**, not a meteorological finding.
+The platform altitude is $H$, the zenith angle from local vertical is $\zeta$, and the slant path is
 
-The source prints an effective transmittance `T_eff=exp(-sum_j d_j sum_k p_jk * coefficient_jk)`. Its coefficient tables are labeled dB/km, which instead implies `T_db=10^(-sum_j d_j coefficient_j/10)` if read literally. Both interpretations are retained for an audit; the headline study uses the **equation-as-printed** convention. Source equations and plotted curves are consistent in approximate scale under the direct exponential convention; neither version is calibrated here with external transmission data. Source [S1] contains the original comparison to MODTRAN, which we do not reproduce.
+$$
+L = \frac{H}{\cos\zeta}.
+$$
 
-## 3. Optical beam and aperture physics
+We use flat atmospheric slabs as an approximation. Let $d_j$ denote the optical path length inside atmospheric layer $j$, and let $C_j$ denote its weather state. The within-layer coefficients and occurrence weights are taken from [S1], Tables I–II, for a 1550 nm wavelength. Independently drawing layer states is an **additional modeling assumption**; it is not an observed joint weather distribution.
 
-We use a normalized Gaussian intensity at the receiver plane with 1/e² intensity beam radius `w` and 2D displacement vector **r**:
+For a state-specific attenuation sum $Q=\sum_j d_j c_{j,C_j}$, the source's equation-as-printed convention is
 
-`I(x,y|r) = [2/(pi w²)] * exp(-2*||(x,y)-r||²/w²).`
+$$
+T_{\mathrm{paper}}=\exp(-Q).
+$$
 
-The receiver has a circular aperture radius `a`; its captured fraction is the integral of `I` over `x²+y² <= a²`. A 2D Gaussian integral gives an **exact** expression:
+Because its coefficient table is labeled dB/km, we also calculate the literal-decibel alternative
 
-`G(a,r,w) = F_{chi'^2_2(lambda)}((2a/w)²), lambda=(2r/w)²`,
+$$
+T_{\mathrm{dB}}=10^{-Q/10}.
+$$
 
-where `F` denotes the **noncentral chi-squared cumulative distribution function** (equivalently related to the Marcum Q-function). The implementation uses `scipy.stats.ncx2.cdf`. The independent radial Bessel quadrature check is described in Section 7.
+The resulting design conclusions differ materially. Neither interpretation is independently calibrated in this project. The source paper's MODTRAN comparison is not reproduced.
 
-We use `w=sqrt(w0²+(theta_div L)²)` as a *simplified receiver-plane beam-radius parametrization*. This is a convenient paraxial illustration, not rigorous Gaussian propagation through turbulence. A physically specified beam would require telescope and laser optics parameters or a Fresnel/Gaussian beam propagation model.
+## 3. Optical beam and circular-aperture collection
 
-## 4. Optical-power availability with pointing jitter
+For a receiver-plane, normalized two-dimensional Gaussian irradiance with $1/e^2$ intensity radius $w$ and displacement vector $\mathbf r$, the irradiance is
 
-Let `(X,Y)~N(0,sigma_r² I)` be independent, zero-mean transverse pointing displacements at the receiver; `sigma_r=L*sigma_theta`, where `sigma_theta` is per-axis angular SD (in radians). The radial displacement `R=sqrt(X²+Y²)` is **Rayleigh distributed**. We neglect boresight bias and correlation. For atmospheric transmittance `T`, instantaneous collected optical power is
+$$
+I(x,y\mid\mathbf r)=\frac{2}{\pi w^2}
+\exp\!\left(-\frac{2\left\|[x,y]^\top-\mathbf r\right\|_2^2}{w^2}\right).
+$$
 
-`P_rx = P_tx * eta_opt * T * G(a,R,w)`.
+Let $a$ be the radius of a circular receiver aperture and $r=\|\mathbf r\|_2$. Integration over the aperture gives the exact collected-power fraction
 
-Define modeled optical-power availability `A=P(P_rx >= P_min)`. For each state, required capture is `g_req=P_min/(P_tx eta_opt T)`. Since `G` decreases monotonically with `R`, find the unique threshold `r_star` such that `G(a,r_star,w)=g_req` when `0<g_req<G(a,0,w)`. Then
+$$
+G(a,r,w)=F_{\chi^{\prime 2}_{2}(\lambda)}\!\left(\frac{4a^2}{w^2}\right),
+\qquad\lambda=\frac{4r^2}{w^2},
+$$
 
-`P(success | T) = 1 - exp(-r_star²/(2 sigma_r²))`,
+where $F_{\chi^{\prime 2}_{2}(\lambda)}$ is the CDF of the **noncentral chi-squared distribution** with two degrees of freedom and noncentrality parameter $\lambda$. This form is implemented with `scipy.stats.ncx2.cdf`, then checked against an independent Bessel-function quadrature.
 
-with the obvious zero/one edge cases. `r_star` is computed by **Brent's method** with bracket expansion. This is *not* a bit-error-rate or detector-noise analysis. Weather is a categorical state per scenario; exact within-scenario probability is `A_s=sum_k p_{k|s} P(success | T_{sk})`. For this study the number of states is small, so direct enumeration is preferable to MC for the central results.
+We use the illustrative receiver-plane beam radius
 
-## 5. Research question: distributionally robust aperture design
+$$
+w=\sqrt{w_0^2+(\theta_{\mathrm{div}}L)^2}.
+$$
 
-Let `s=1..5` index the five weather scenarios. Their across-scenario probabilities are **not available from [S1]**. We declare a *hypothetical nominal prior* `q=(.76,.10,.07,.04,.03)` in the order (clear, pollution, fog, rain, snow). Thus nominal availability is `A_nom(a)=sum_s q_s A_s(a)`.
+This convenient paraxial radius parametrization does not model optical turbulence or a fully specified laser/telescope transmitter.
 
-If the true scenario mix `p` is not precisely known, take the TV ambiguity set
+## 4. Pointing error and received-power availability
 
-`U(q,rho)={p>=0, sum p=1, 0.5*sum_s |p_s-q_s| <= rho}`.
+Let independent, zero-mean transverse pointing errors $X$ and $Y$ have common SD $\sigma_r=L\sigma_\theta$, where $\sigma_\theta$ is the angular SD per axis. Their radial magnitude has a Rayleigh distribution:
 
-The modeled worst-case availability is `A_rob(a)=min_{p in U(q,rho)} sum_s p_s A_s(a)`. The inner optimization is **linear programming**; for five states it is solved exactly by transferring up to `rho` probability mass from high-success to low-success weather categories. An independent SciPy HiGHS LP confirms the mass-transfer computation.
+$$
+X,Y\sim\mathcal N(0,\sigma_r^2),\qquad
+R=\sqrt{X^2+Y^2}\sim\operatorname{Rayleigh}(\sigma_r).
+$$
 
-The design seeks the smallest radius `a*` satisfying the **chance constraint** `A_rob(a*) >= target`. Since aperture collection and conditional availability do not decrease as `a` increases, **bisection/Brent root finding** is appropriate. For a fixed set of parameters, the ambiguity radius is not a statistical confidence interval and a feasible design does not guarantee actual availability without valid physical models and empirical weather probabilities.
+With atmospheric transmittance $T$, optical efficiency $\eta_{\mathrm{opt}}$ and transmitted power $P_{\mathrm{tx}}$, the collected optical power is
+
+$$
+P_{\mathrm{rx}}=P_{\mathrm{tx}}\,\eta_{\mathrm{opt}}\,T\,G(a,R,w).
+$$
+
+Define **received-power availability**, not BER or end-to-end network uptime, by
+
+$$
+A=\Pr(P_{\mathrm{rx}}\ge P_{\min}).
+$$
+
+For fixed $T$, the minimum required capture fraction is $g_{\mathrm{req}}=P_{\min}/(P_{\mathrm{tx}}\eta_{\mathrm{opt}}T)$. When it lies strictly between zero and the aligned capture $G(a,0,w)$, solve $G(a,r_\star,w)=g_{\mathrm{req}}$ for the critical radial pointing offset $r_\star$. Then
+
+$$
+\Pr(\mathrm{success}\mid T)=
+1-\exp\!\left(-\frac{r_\star^2}{2(L\sigma_\theta)^2}\right).
+$$
+
+Zero/one edge cases are handled explicitly in the code. The threshold inversion uses bracket expansion with Brent's method. The exact within-scenario availability $A_s$ sums this conditional probability over the finite weather states in scenario $s$; Monte Carlo is reserved for an independent stochastic check.
+
+## 5. Distributionally robust receiver-aperture design
+
+The five weather scenarios are indexed by $s=1,\ldots,5$. Since [S1] does not provide probabilities **across** those scenarios, this study explicitly assumes the illustrative prior
+
+$$
+q=(0.76,\ 0.10,\ 0.07,\ 0.04,\ 0.03)
+$$
+
+in the order **clear, pollution, fog, rain, snow**. The nominal availability is $A_{\mathrm{nom}}(a)=\sum_s q_s A_s(a)$.
+
+The total-variation (TV) ambiguity set, with radius $\rho$, is
+
+$$
+\mathcal U(q,\rho)=\left\{p\in\mathbb R^5:\ p_s\ge0,\ \sum_s p_s=1,\ \frac12\|p-q\|_1\le\rho\right\}.
+$$
+
+The worst-case modeled availability and minimum-aperture design are
+
+$$
+A_{\mathrm{rob}}(a)=\min_{p\in\mathcal U(q,\rho)}\sum_s p_s A_s(a),
+$$
+
+$$
+a^\star(\rho,\sigma_\theta)=\min\left\{a\ge0:\ \min_{p\in\mathcal U(q,\rho)}\sum_s p_s A_s(a,\sigma_\theta)\ge A_{\mathrm{target}}\right\}.
+$$
+
+The inner finite-state optimization is solved by **probability-mass transfer**, with an independent **HiGHS linear-programming (LP)** check. The outer scalar aperture problem uses bracketed **Brent–Dekker root finding** and feasibility checks. The term *distributionally robust* refers to the mathematical ambiguity set; $\rho$ is **not** a measured uncertainty or confidence interval. These methods are established techniques, not novel algorithms claimed by this project.
 
 ## 6. Required whole-design coefficient sensitivity
 
