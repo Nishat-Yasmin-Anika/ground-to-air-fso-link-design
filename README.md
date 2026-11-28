@@ -122,7 +122,7 @@ Table 1 reports the minimum receiver diameter for a 92% probability of meeting o
 
 [![Receiver diameter and feasibility across atmospheric cases](results/figures/11_model_and_target_sensitivity.png)](results/figures/11_model_and_target_sensitivity.svg)
 
-*Fig. 2. Receiver aperture requirements across atmospheric cases and availability targets. [Vector figure](results/figures/11_model_and_target_sensitivity.svg).*
+*Fig. 2. Receiver aperture requirements and atmospheric feasibility bounds across four atmospheric models for a 92% availability target. [Vector figure](results/figures/11_model_and_target_sensitivity.svg).*
 
 The optical parameters remain fixed in Table 1. The differences therefore arise from the atmospheric assumptions and the uncertainty in weather probabilities, rather than changes in transmitter power or beam geometry. The comparison does not establish which coefficient interpretation is physically correct.
 
