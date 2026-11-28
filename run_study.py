@@ -144,8 +144,8 @@ ablation=[]
 for a in radii:
     joint=availability(a,15,link)
     weather_only=availability(a,0,link)
-    # Clear-only atmospheric scenario but with stochastic pointing jitter
-    point_only=success_probability_for_transmittance(1.,a,15,link)
+    # No atmospheric extinction; stochastic pointing jitter retained.
+point_only = success_probability_for_transmittance(1., a, 15, link)
     ideal=success_probability_for_transmittance(1.,a,0,link)
     ablation.append((a,joint,weather_only,point_only,ideal))
 csvout('04_ablation.csv',['aperture_radius_m','joint_weather_and_pointing','weather_only_zero_jitter','no_extinction_pointing_only','no_extinction_no_jitter'],ablation)
