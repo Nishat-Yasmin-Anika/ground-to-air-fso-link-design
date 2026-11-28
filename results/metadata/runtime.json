@@ -1,7 +1,7 @@
 {
-  "wall_seconds_end_to_end_approx": 57.64372850300015,
+  "wall_seconds_end_to_end_approx": 56.55870846700054,
   "host": "machine on which this script was executed (see environment.json)",
   "fast_mode": false,
   "mc_max_samples": 100000,
-  "peak_process_rss_mib_linux": 158.4375
+  "peak_process_rss_mib_linux": 158.578125
 }

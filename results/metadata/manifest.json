@@ -2,7 +2,7 @@
   "source_sha256": {
     "src/atmosphere.py": "77012dfa1d88bc8a7ca73c378db18a449aefe4026d72dc893db5572f8defb258",
     "src/fso_link.py": "e1bd073598456a750ecb6808ed559152ca9d17be5eb8abde3a2bc853352dcc25",
-    "run_study.py": "5ff000930f1b90f9e8050e8fcd45c934abec5e90ebe1f89e08007cb3ab3f864d",
+    "run_study.py": "72f1d57e9765c2fb006aa3f7b3c4b9eb67363936c2848b7ea23aaa8d0f17a8e1",
     "tests/test_link.py": "900c09dce6d4c0c66c4f1203c1f7fdf4e273aa49b589ce063e7a37c9d6ff660e",
     "tests/test_audit.py": "2f8ba2d1e4e4274d5856465d842f7a06fe8841f760da452384a2c854767ee910"
   },
@@ -20,7 +20,7 @@
     {
       "path": "figures/01_aperture_integral_validation.svg",
       "bytes": 42187,
-      "sha256": "fa3d33b40c4648c8776e322ab10530c028e1fe5e0efd245a2c9d8a40e9760e92"
+      "sha256": "079a2eaf2d4ce5d18e21effee78ee90086a69cb19388888c081b2ef818fe9864"
     },
     {
       "path": "figures/02_atmospheric_unit_interpretations.png",
@@ -30,7 +30,7 @@
     {
       "path": "figures/02_atmospheric_unit_interpretations.svg",
       "bytes": 40755,
-      "sha256": "627cce152ba1954834664ee460ec5d111cdad06bfb0b76279e17fd46163b186b"
+      "sha256": "3d790fa1bf0f6df34a172363618a323aba2bd2d27327faf068bac89835de7e96"
     },
     {
       "path": "figures/03_availability_vs_aperture.png",
@@ -40,7 +40,7 @@
     {
       "path": "figures/03_availability_vs_aperture.svg",
       "bytes": 58207,
-      "sha256": "726d133a8b391daa1b2bc209d7f7b9c99a1597f4f9af73720144d86eebb8fd61"
+      "sha256": "a759a95555f33d87965aebd466cd68c910af3e334f7073df482c427e6402eac0"
     },
     {
       "path": "figures/04_minimum_aperture_frontier.png",
@@ -50,7 +50,7 @@
     {
       "path": "figures/04_minimum_aperture_frontier.svg",
       "bytes": 46188,
-      "sha256": "59293d36c2a65430500bbd7b19d624dca9728cd5e82b215f04e2598bd3409c8f"
+      "sha256": "991b3a020f642ffd05145cd895272cf784717cf1c07a4817a40fac6e6bab2261"
     },
     {
       "path": "figures/05_weather_probability_shift.png",
@@ -60,7 +60,7 @@
     {
       "path": "figures/05_weather_probability_shift.svg",
       "bytes": 49529,
-      "sha256": "69f0e21f945d4f5c26d792bfba0dfe401272d3aa5529a05dce7abdbe2f0a9f39"
+      "sha256": "0af7808900efa151032ff37a2192e99ce6422ce68977e1f6efc0d008b150bff5"
     },
     {
       "path": "figures/06_design_feasibility_map.png",
@@ -70,7 +70,7 @@
     {
       "path": "figures/06_design_feasibility_map.svg",
       "bytes": 199343,
-      "sha256": "6da40fe68885937f7136182db6b8c71e7c63232675d820e02ee5063a7758512b"
+      "sha256": "1e3618759669bfc4518cd31b8858325c98df5d8005e9a40b9a3e5b93ce04afc8"
     },
     {
       "path": "figures/07_ablation.png",
@@ -80,7 +80,7 @@
     {
       "path": "figures/07_ablation.svg",
       "bytes": 48905,
-      "sha256": "2d9b9365bddd7f09fe94fa996c597bc37c2e6644afe5167ee1c62b64989d9114"
+      "sha256": "a22d5481c72fb41a4c77e1c63c9249fb7f4859aa6ad550c33450195e41095b22"
     },
     {
       "path": "figures/08_monte_carlo_validation.png",
@@ -90,7 +90,7 @@
     {
       "path": "figures/08_monte_carlo_validation.svg",
       "bytes": 41966,
-      "sha256": "0522fd3f499f6e8f2bb41f0c999fda0f6c625889ae3d56028116014242a6d6db"
+      "sha256": "9cac63b8943791d1d32dff967957506ef3b7136c6a210cfb88f5600d488b2664"
     },
     {
       "path": "figures/09_atmospheric_feasibility_ceiling.png",
@@ -100,7 +100,7 @@
     {
       "path": "figures/09_atmospheric_feasibility_ceiling.svg",
       "bytes": 57480,
-      "sha256": "ec7ef8f3a4aebc7857cb07b2f0606e799dd6f240e7ba5309a97643accb2a89fc"
+      "sha256": "e2eafb77c6f369e30d8cf4772b19c84eb8fe3cbeb5cbcdea0faf01f50c8c598c"
     },
     {
       "path": "figures/10_optimization_convention_sensitivity.png",
@@ -110,7 +110,7 @@
     {
       "path": "figures/10_optimization_convention_sensitivity.svg",
       "bytes": 77559,
-      "sha256": "5ce9d4898fd9990719e9005a8ba34055c0915b021517965007c19f6cafa41794"
+      "sha256": "1c1617844b0e9444546ab38f1a50c25656bc30bf582d014f605b60aa51c3f79f"
     },
     {
       "path": "figures/11_model_and_target_sensitivity.png",
@@ -120,7 +120,7 @@
     {
       "path": "figures/11_model_and_target_sensitivity.svg",
       "bytes": 72178,
-      "sha256": "e0c19f25939d5c72a3419f243731e5b0f455d92cf3182cb10e8009489a87e134"
+      "sha256": "f9994c1d4bc374258dd7786ed04526f317d8fc09a8f6cb8d023ff90fb83b49fc"
     },
     {
       "path": "figures/12_fog_model_benchmark.png",
@@ -130,7 +130,7 @@
     {
       "path": "figures/12_fog_model_benchmark.svg",
       "bytes": 50941,
-      "sha256": "21fa6b1453bfc20b9d3b4236524a30c3ba1d91780ae5e3843b78d6090ff86df7"
+      "sha256": "20ff06a2bec316afffc08ec5b37fedea4f8479a6aed2ee58fe3f722a034229ae"
     },
     {
       "path": "metadata/environment.json",
@@ -144,8 +144,8 @@
     },
     {
       "path": "metadata/runtime.json",
-      "bytes": 227,
-      "sha256": "39a68bbf21a8a91bedbbf500d5b1cbcc6c16f15cc4ed86b47a1e803f37d6b86f"
+      "bytes": 229,
+      "sha256": "024064947d4d234d354f1cc9e98af37d04dcb49b8b5e3a32d727f8eb36b16ad2"
     },
     {
       "path": "tables/01_weather_scenarios_and_conventions.csv",
@@ -169,8 +169,8 @@
     },
     {
       "path": "tables/05_monte_carlo_verification.csv",
-      "bytes": 467,
-      "sha256": "f166d18c222718c730a2f4b9d729796d3c5fbfb4966534a371c2b60503cf10d8"
+      "bytes": 469,
+      "sha256": "b687916c624d8b89189ebff4314a26bb2e1a6369dd0523cfcbd770563b26bed2"
     },
     {
       "path": "tables/06_alternate_illustrative_weather_priors.csv",
