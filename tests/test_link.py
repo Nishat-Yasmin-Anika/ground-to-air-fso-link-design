@@ -11,7 +11,7 @@ from fso_link import (Link,DEFAULT_PRIOR,SCENARIO_NAMES,gaussian_aperture_captur
     wilson_score,weather_limited_ceiling,critical_tv_radius)
 
 class PhysicalAndNumericalChecks(unittest.TestCase):
-    def setUp(self): self.link=Link()
+    def setUp(self): self.link=Link(convention=PAPER_EXPONENTIAL)
     def test_01_source_state_probabilities(self):
         for name,s in scenarios_1550nm().items():
             self.assertEqual(s.name,scenarios_1550nm()[name].name)

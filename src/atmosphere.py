@@ -19,6 +19,7 @@ DB_LABEL = 'db_label'
 CONVENTIONS = (PAPER_EXPONENTIAL, DB_LABEL)
 WAVELENGTH_NM = 1550
 MAX_ZENITH_DEG = 70.0
+PROFILES = ('table_ii', 'clear_prose', 'fog_visibility_stress')
 
 
 @dataclass(frozen=True)
@@ -73,7 +74,7 @@ def _slab(name: str, lower: float, upper: float,
     return Layer(name, lower, upper, tuple(State(*x) for x in states))
 
 
-def scenarios_1550nm() -> dict[str, Scenario]:
+def scenarios_1550nm(profile: str = "table_ii") -> dict[str, Scenario]:
     """Transcription of Table II, with rainy clear-air 14.2 km split around cloud.
 
     Table II prints coefficients as dB/km, but Eqs. 1-3 use exp(-coefficient*km).
@@ -84,7 +85,9 @@ def scenarios_1550nm() -> dict[str, Scenario]:
     volcanic = _slab('stratospheric volcanic aerosol', 15, 30,
                      ('high volcanic activity', .5, .0104),
                      ('background volcanic activity', .5, .0002036))
-    return {
+    if profile not in PROFILES:
+        raise ValueError('Unknown atmospheric profile')
+    scenarios = {
         'rain': Scenario('Rain / nimbostratus', (
             _slab('lower clear air', 0, .6, clear),
             _slab('nimbostratus cloud', .6, 1.4,
@@ -105,6 +108,30 @@ def scenarios_1550nm() -> dict[str, Scenario]:
             _slab('heavy snow', 0, 2, ('heavy snow', 1, .2)),
             _slab('upper clear air', 2, 15, clear), volcanic)),
     }
+    # Preserve the published table; alternative profiles are explicit, not corrections.
+    if profile == 'clear_prose':
+        scenarios['clear'] = Scenario('Clear atmosphere: Section IV-C prose', (
+            _slab('clear air', 0, 15, clear), volcanic))
+    elif profile == 'fog_visibility_stress':
+        # Al Naboulsi radiation-fog polynomial in native km^-1, converted to dB/km.
+        # See doi:10.3390/photonics13111013, Table 1 (1550 nm, V=0.05–1 km).
+        # Only fog coefficients change; layer thicknesses remain Table II.
+        scenarios['fog'] = Scenario('Radiation-fog coefficient stress case', (
+            _slab('thick fog', 0, 1, ('thick fog', 1, radiation_fog_db_per_km(.20))),
+            _slab('light fog', 1, 2, ('light fog', 1, radiation_fog_db_per_km(.77))),
+            _slab('upper clear air', 2, 15, clear), volcanic))
+    return scenarios
+
+
+def radiation_fog_db_per_km(visibility_km: float, wavelength_um: float = 1.55) -> float:
+    """Empirical radiation-fog sensitivity model, not local calibration.
+
+    Wavelength in micrometres, visibility in km, output in dB/km.
+    Native extinction and conversion as in doi:10.3390/photonics13111013, Table 1.
+    """
+    if not (.05 <= visibility_km <= 1 and .69 <= wavelength_um <= 1.55):
+        raise ValueError('Outside stated radiation-fog model domain')
+    return (10/log(10))*(.18126*wavelength_um**2 + .13709*wavelength_um + 3.7502)/visibility_km
 
 
 def path_lengths_km(scenario: Scenario, altitude_km: float,
@@ -128,7 +155,7 @@ def integrated_printed_coefficient(scenario: Scenario, altitude_km: float,
 
 
 def transmittance_from_q(q: float | np.ndarray,
-                         convention: str = PAPER_EXPONENTIAL):
+                         convention: str = DB_LABEL):
     """Two explicitly separate readings of the source's coefficient notation."""
     if convention not in CONVENTIONS:
         raise ValueError(f'Unknown convention {convention!r}')
@@ -140,7 +167,7 @@ def transmittance_from_q(q: float | np.ndarray,
 
 
 def loss_db_from_q(q: float | np.ndarray,
-                   convention: str = PAPER_EXPONENTIAL):
+                   convention: str = DB_LABEL):
     """Equivalent power loss in dB, *after* choosing a convention."""
     if convention not in CONVENTIONS:
         raise ValueError('Unknown convention')
@@ -149,7 +176,7 @@ def loss_db_from_q(q: float | np.ndarray,
 
 def effective_transmittance(scenario: Scenario, altitude_km: float,
                             zenith_deg: float = 0,
-                            convention: str = PAPER_EXPONENTIAL) -> float:
+                            convention: str = DB_LABEL) -> float:
     """T_eff = f(E[Q]); *not* generally equal to E[f(Q)]."""
     return transmittance_from_q(integrated_printed_coefficient(
         scenario, altitude_km, zenith_deg), convention)
@@ -180,7 +207,7 @@ def exact_distribution(scenario: Scenario, altitude_km: float,
 
 def exact_statistics(scenario: Scenario, altitude_km: float,
                      zenith_deg: float = 0, budget_db: float = 3.,
-                     convention: str = PAPER_EXPONENTIAL) -> dict[str, float]:
+                     convention: str = DB_LABEL) -> dict[str, float]:
     """Exact finite-state E[T] and atmospheric loss-budget exceedance.
 
     Budget exceedance is NOT receiver outage: receiver, scintillation,
@@ -200,7 +227,7 @@ def exact_statistics(scenario: Scenario, altitude_km: float,
 
 def mean_transmittance_factorized(scenario: Scenario, altitude_km: float,
                                   zenith_deg: float = 0,
-                                  convention: str = PAPER_EXPONENTIAL) -> float:
+                                  convention: str = DB_LABEL) -> float:
     """O(sum K_j) analytic E[T] if states in different slabs are independent."""
     ds = path_lengths_km(scenario, altitude_km, zenith_deg)
     product_mean = 1.

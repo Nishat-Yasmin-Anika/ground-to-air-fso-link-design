@@ -1,47 +1,24 @@
 # Source-to-implementation map
 
-## [S1] Atmospheric model: professor and collaborators
+## S1 — Layered atmosphere
+E. Erdogan, M. Elamassie, I. Altunbas, G. K. Kurt, M. Uysal and H. Yanikomeroglu, *Modeling Atmospheric Attenuation in Vertical FSO Links: An Altitude-Aware Piecewise Framework*, DOI [10.1109/MVT.2026.3687349](https://doi.org/10.1109/MVT.2026.3687349). Checked against the [arXiv author manuscript v1](https://arxiv.org/html/2604.18207v1), Sections III–IV and Tables I–II. The title of the manuscript differs from the journal title.
 
-E. Erdogan, M. Elamassie, I. Altunbas, G. K. Kurt, M. Uysal and H. Yanikomeroglu. *Modeling Atmospheric Attenuation in Vertical FSO Links: An Altitude-Aware Piecewise Framework*. IEEE Vehicular Technology Magazine, 2026. DOI: https://doi.org/10.1109/MVT.2026.3687349. Earlier author manuscript: https://arxiv.org/abs/2604.18207 , titled *A Novel Piecewise Atmospheric Attenuation Model for Free Space Optical Links in Vertical Heterogeneous Networks* (arXiv:2604.18207). The journal article uses the updated title cited above.
+`src/atmosphere.py` implements the printed Table II scenario boundaries and coefficients. For the rainy scenario, Section IV-A places the nimbostratus layer at 0.6–1.4 km; the remaining clear-air depth is split around it. Table II and Section IV-C differ in their lower clear-air layer; the default retains Table II for traceability, while `clear_prose` applies the 0–15 km clear-air description. The 1 km thick and 1 km light fog slabs reproduce Table II, not a typical measured fog depth. The source labels coefficients dB/km but uses the printed values in a natural exponential. The default follows literal power-decibel conversion, with the legacy branch as a separate interpretation. Original coefficient generation and MODTRAN comparisons were not reproduced. The published state probabilities are adopted conditionally; neither ERA5 nor a local weather data set has been processed. Independent states and five-category mixture are additional hypotheses.
 
-**Actually used:** Section III piecewise atmospheric exponential, Table I (1550 nm coefficient glossary) and Table II (five scenarios, geometric layers, conditional state weights), implemented in `src/atmosphere.py`. Main figures use `exp(-Q)` to trace equations; comparative dimensional audit retains `10^(-Q/10)` because coefficient tables are labeled dB/km. **The source itself is not experimentally reproduced here; there are no MODTRAN outputs or source figure digitalizations.**
+## S2 — Independent fog sensitivity model
+M. Al Naboulsi, H. Sizun and F. de Fornel, *Fog attenuation prediction for optical and infrared waves*, Optical Engineering 43 (2004), 319–329. The native radiation-fog extinction polynomial is `(0.18126 λ² + 0.13709 λ + 3.7502)/V` in km^-1, λ in µm, V in km. Conversion to power dB/km requires multiplying by 10/ln(10). This conversion and source range (0.69–1.55 µm, 0.05–1 km) are explicitly documented in [Validity-Aware Reliability Analysis and Power-Margin Design for Fog-Limited Free-Space Optical Links, Table 1](https://www.mdpi.com/2304-6732/13/11/1013) and the conversion is independently corroborated by [Nadeem et al., Radioengineering 2010](https://www.radioeng.cz/fulltexts/2010/10_04_596_600.pdf). A [2026 comparison article](https://doi.org/10.1038/s44459-026-00081-8) reports the polynomial directly in dB/km; the inconsistency is explicitly shown as a diagnostic in Table 10, not used as the native-unit model. The original 2004 paper's full text was not obtained. The 2026 validity-aware article also makes clear that the radiation relation is conditional on radiation fog; here it is a hypothetical stress case, not a claim that the source fog is radiation fog. Only the fog coefficients change, at 0.20 and 0.77 km visibility; slab depths and other coefficients remain Table II. No measured data or original fit reproduction is claimed. Do not combine these explicitly converted coefficients with the legacy exponential branch.
 
-The source's occurrence weights are often described as long-term fractions of time within an atmospheric slab. Treating independent state draws from these weights as a finite probability mixture is an explicit extension and independence assumption, not a verified joint atmospheric distribution.
+## S3 — Gaussian aperture and pointing
+A. A. Farid and S. Hranilovic, [Outage Capacity Optimization for Free-Space Optical Links with Pointing Errors](https://doi.org/10.1109/JLT.2007.899174), 2007. Background for pointing effects; the exact noncentral chi-square aperture integral here is derived from normalized Gaussian irradiance, not their equivalent beamwidth approximation. See [SciPy ncx2](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.ncx2.html). Bessel and independent Cartesian quadratures verify the aperture formula. Gaussian beam-quality relationship: [Gaussian Beam Optics technical guide](https://www.physics.utoronto.ca/apl/hene/Gaussian-Beam-Optics.pdf). The implied M² is a consistency check, not a measurement. An equivalent Gaussian radius is assumed even for M² > 1.
 
-## [S2] Multilayer airborne design: professor and collaborator
+## S4 — Airborne optical-link research context
+M. Elamassie and M. Uysal, [Multi-Layer Airborne FSO Systems: Performance Analysis and Optimization](https://doi.org/10.1109/TCOMM.2024.3471995), 2025. Conceptual motivation, not reproduction of its communication-system results. [Prof. Elamassie's publications](https://faculty.ozyegin.edu.tr/mohammedelamassie/publications/). No affiliation or unpublished materials claimed.
 
-M. Elamassie and M. Uysal, *Multi-Layer Airborne FSO Systems: Performance Analysis and Optimization*, IEEE Transactions on Communications, vol. 73, no. 4, 2025, pp. 2522–2537. DOI https://doi.org/10.1109/TCOMM.2024.3471995 . Official professor list: https://faculty.ozyegin.edu.tr/mohammedelamassie/publications/ .
+## S5 — Probability ambiguity
+H. Rahimian and S. Mehrotra, [Frameworks and Results in Distributionally Robust Optimization](https://doi.org/10.5802/ojmo.15), 2022. Total variation is half L1 distance; the inner linear objective is minimized by mass transfer, checked against a separate HiGHS LP. Radius is a sensitivity parameter, not an estimated confidence set.
 
-**Conceptual motivation:** combine atmospheric, geometry and pointing effects and ask a design question. **Not reproduced:** their multi-hop topology, random HAPS motion, bit error-rate formulas or power allocation.
+## S6 — Engineering standards context
+[ITU-R P.1814-1](https://www.itu.int/rec/R-REC-P.1814-1-202509-I/en) (terrestrial FSO; background checklist, not a claim of compliance) and [ITU-R P.835-7](https://www.itu.int/rec/R-REC-P.835-7-202408-I/en) (reference atmospheres, not a source for the five-category prior). A full link budget requires calibrated atmospheric and device information including scintillation and receiver impairments.
 
-## [S3] Related research context (not a model source)
-
-TÜBİTAK 1001 — Project 125E806, Prof. M. Elamassie, Aug 2026–Aug 2029: https://faculty.ozyegin.edu.tr/mohammedelamassie/tubitak-1001-project-125e806/ .
-
-**Context only:** These research topics overlap with the general themes of atmospheric modeling, optical-link reliability, pointing effects and optimization. The present repository is an independent portfolio study; it is not affiliated with that funded project and does not use its unpublished materials.
-
-## [S4] Standard Gaussian FSO pointing model
-
-A representative open-access discussion of Gaussian receiver-plane irradiance, finite circular aperture and zero-mean pointing jitter: https://pmc.ncbi.nlm.nih.gov/articles/PMC9370906/ . Our **exact aperture integral** is derived for an isotropic 2D Gaussian irradiance distribution rather than adopting the commonly used equivalent-beamwidth approximation.
-
-**Numerical formula:** if receiver-plane irradiance is normalized `I(x,y)=(2/pi/w^2)*exp(-2||x-r||²/w²)`, then the integrated power over a circular receiver radius `a` is `ncx2.cdf((2a/w)^2, df=2, nc=(2r/w)^2)`. This follows because the Gaussian spot corresponds to a bivariate Gaussian random point with coordinate variance `w²/4`. Reference: https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.ncx2.html . We independently verify it via radial numerical integration with a modified Bessel function.
-
-## [S5] Distributionally robust optimization (DRO)
-
-H. Rahimian and S. Mehrotra, *Frameworks and Results in Distributionally Robust Optimization*, Open Journal of Mathematical Optimization, 2022: https://ojmo.centre-mersenne.org/item/10.5802/ojmo.15.pdf . This is a standard research framework, including total variation (TV) ambiguity sets. Our five-scenario worst-case objective is a linear program; it can be solved by greedy probability-mass transfer, which we independently cross-check against `scipy.optimize.linprog`.
-
-## [S6] Background atmospheric reference
-
-ITU-R Recommendation P.835-7, *Reference Standard Atmospheres*: https://www.itu.int/rec/R-REC-P.835-7-202408-I/en . Atmospheric profiles are contextual background only; no measured local weather distribution was downloaded or computed from this standard.
-
-## Explicitly *not* sourced from S1–S6
-
-The cross-scenario prior `(clear=.76, pollution=.10, fog=.07, rain=.04, snow=.03)`, the TV radius `rho=.04`, transmitter optical power, receiver sensitivity threshold, beam divergence, 2D pointing jitter and the 92% target are **illustrative choices defined by this study**. They are not measurements, professor-provided experimental settings or estimates from ERA5.
-
-## [S7] Independent technical standard used as checklist only
-
-ITU-R Recommendation P.1814-1 (Sept. 2025), *Prediction methods required for the design of terrestrial free-space optical links*: https://www.itu.int/rec/R-REC-P.1814-1-202509-I/en . The recommended received-power margin distinguishes atmospheric, geometric, scintillation and system losses. **This project omits scintillation and measured receiver sensitivity; it is not standards-compliant link budgeting.**
-
-## Related literature and software context
-
-Related research includes H. Safi, A. Dargahi and J. Cheng, *Analytical Channel Model and Link Design Optimization for Ground-to-HAP Free-Space Optical Communications* (2020), and M. Polnik, A. Arulselvan and A. Riccardi, *Scheduling Space-to-Ground Optical Communication Under Cloud Cover Uncertainty* (2021). These provide relevant antecedents for analytical link design and robust weather decisions. No code from external repositories is included in this project. The principal implementation is self-contained and attributed above.
+## Not literature-derived
+50 mW optical output, 70% optical efficiency, 2 mW threshold, 25 mm waist, 55 µrad divergence, per-axis jitter, 92% target and nominal prior (0.76,0.10,0.07,0.04,0.03) are illustrative. No practical receiver or service-level specification is represented. No explicit rain-rate or snow-rate law is implemented: rain means the source's nimbostratus mixture. All probabilities refer to snapshots under the specified model, not time-series uptime.

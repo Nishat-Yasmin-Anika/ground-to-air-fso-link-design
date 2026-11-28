@@ -1,7 +1,7 @@
 coefficient_convention,TV_radius,minimum_aperture_diameter_cm_at_15urad,atmosphere_only_availability_ceiling,globally_infeasible
-paper_exponential,0.0,21.946790889408554,0.964,False
-paper_exponential,0.04,27.009455427254853,0.928,False
+paper_exponential,0.0,21.947086453437805,0.964,False
+paper_exponential,0.04,27.00945615768433,0.928,False
 paper_exponential,0.08,,0.892,True
-db_label,0.0,9.472045437866992,1.0,False
-db_label,0.04,11.815756271611622,1.0,False
-db_label,0.08,13.61951397600976,1.0,False
+db_label,0.0,9.472060203552244,1.0,False
+db_label,0.04,11.815801262855533,1.0,False
+db_label,0.08,13.619209527969362,1.0,False

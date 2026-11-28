@@ -25,16 +25,29 @@
     "threshold_mw": 2.0,
     "beam_waist_m": 0.025,
     "divergence_urad": 55.0,
-    "convention": "paper_exponential"
+    "convention": "db_label",
+    "profile": "table_ii"
   },
   "target_availability": 0.92,
   "tv_radius": 0.04,
   "monte_carlo_seed_base": 20261123,
-  "fast_mode": true,
-  "monte_carlo_samples_max": 20000,
+  "fast_mode": false,
+  "monte_carlo_samples_max": 100000,
   "method": "exact conditional mixture + Rayleigh jitter CDF + TV mass transfer; independent scipy linprog and random draws",
   "receiver_power_threshold_is_illustrative_not_device_data": true,
-  "propagation_convention_primary": "paper_exponential",
+  "propagation_convention_primary": "db_label",
+  "legacy_convention_is_source_comparison_only": true,
+  "implied_gaussian_equivalent_m_squared": 2.786896708829655,
+  "minimum_aperture_search_radius_m": [
+    0.025,
+    0.5
+  ],
+  "source_profiles": [
+    "table_ii_db",
+    "table_ii_legacy",
+    "clear_prose_db",
+    "fog_visibility_db"
+  ],
   "end_to_end_sensitivity_in_both_conventions": true,
   "note": "Only single-link optical-power availability; not BER or field reliability."
 }

@@ -1,4 +1,4 @@
-"""Illustrative ground-to-air FSO link design model.
+"""Research-grade *illustrative* ground-to-air FSO link design study.
 
 Model components:
 * atmosphere.py transcribes Erdogan et al. (2026) Tables I-II with dual-unit audit
@@ -22,7 +22,7 @@ from scipy.optimize import brentq, linprog
 from scipy.integrate import quad
 from scipy.special import i0e
 from atmosphere import (PAPER_EXPONENTIAL, DB_LABEL, scenarios_1550nm,
-                        exact_distribution, transmittance_from_q)
+                        exact_distribution, transmittance_from_q, PROFILES)
 
 SCENARIO_NAMES = ('clear','pollution','fog','rain','snow')
 # Hypothetical demonstration mixture, NOT ERA5-derived; source paper does
@@ -38,7 +38,8 @@ class Link:
     threshold_mw: float = 2.0
     beam_waist_m: float = .025
     divergence_urad: float = 55.0
-    convention: str = PAPER_EXPONENTIAL
+    convention: str = DB_LABEL
+    profile: str = "table_ii"
 
     def __post_init__(self):
         for name in ('altitude_km','tx_mw','optical_efficiency','threshold_mw','beam_waist_m','divergence_urad'):
@@ -47,10 +48,16 @@ class Link:
                 raise ValueError(f'{name} must be positive and finite')
         if not (0 < self.optical_efficiency <= 1):
             raise ValueError('optical efficiency outside (0,1]')
-        if not (0 <= self.zenith_deg < 70):
+        if not (0 <= self.zenith_deg <= 70):
             raise ValueError('Zenith out of range')
         if self.convention not in (PAPER_EXPONENTIAL,DB_LABEL):
             raise ValueError('Unknown atmospheric convention')
+        if self.profile not in PROFILES:
+            raise ValueError('Unknown atmospheric profile')
+        if self.profile == 'fog_visibility_stress' and self.convention != DB_LABEL:
+            raise ValueError('Radiation-fog model explicitly uses dB/km')
+        if self.implied_m_squared < 1 - 1e-12:
+            raise ValueError('Waist/divergence imply M² below diffraction limit')
         if self.altitude_km > 30:
             raise ValueError('Source scenarios terminate at 30 km')
 
@@ -58,6 +65,11 @@ class Link:
     def length_m(self):
         # Flat Earth and parallel horizontal layers as in atmospheric slab model
         return 1000 * self.altitude_km / math.cos(math.radians(self.zenith_deg))
+
+    @property
+    def implied_m_squared(self):
+        """Gaussian-equivalent beam quality; not a measured M²."""
+        return math.pi*self.beam_waist_m*self.divergence_urad*1e-6/1550e-9
 
     @property
     def beam_radius_m(self):
@@ -74,10 +86,10 @@ def gaussian_aperture_capture(a_m: float, w_m: float, displacement_m):
     Integrated power = F_{noncentral chi-square(2, lambda)}((2a/w)^2),
     lambda=(2r/w)^2. This is geometrical+pointing collection only.
     """
-    if a_m <= 0 or w_m <= 0:
+    if not (math.isfinite(a_m) and math.isfinite(w_m) and a_m > 0 and w_m > 0):
         raise ValueError('Aperture radius and beam radius must be positive')
     r = np.asarray(displacement_m)
-    if np.any(r < 0):
+    if np.any(~np.isfinite(r)) or np.any(r < 0):
         raise ValueError('Displacement must be >=0')
     x = (2*a_m/w_m)**2
     return ncx2.cdf(x, df=2, nc=(2*r/w_m)**2)
@@ -88,6 +100,8 @@ def capture_via_independent_quadrature(a: float,w: float,r: float) -> float:
 
     4s/w^2 * exp(-2*(s-r)^2/w^2) * i0e(4sr/w^2).
     """
+    if not all(math.isfinite(v) for v in (a,w,r)) or a <= 0 or w <= 0 or r < 0:
+        raise ValueError('Invalid aperture geometry')
     def f(s):
         z = 4*s*r/(w*w)
         return 4*s/(w*w) * math.exp(-2*(s-r)**2/(w*w)) * i0e(z)
@@ -100,7 +114,8 @@ def mean_capture_analytic(a: float,w: float,sigma_m: float):
     Follows by convolution of independent 2D Gaussian photon location
     N(0,w^2/4 I) and pointing offset N(0,sigma^2 I).
     """
-    if sigma_m < 0: raise ValueError('sigma must be >=0')
+    if not all(math.isfinite(v) for v in (a,w,sigma_m)) or a <= 0 or w <= 0 or sigma_m < 0:
+        raise ValueError('Invalid aperture geometry or jitter')
     return -math.expm1(-a*a/(2*(sigma_m*sigma_m+w*w/4)))
 
 
@@ -110,13 +125,14 @@ def critical_offset(a: float,w: float,required_capture: float) -> float:
     Monotonicity is valid for a centered circular receiver and a radially
     symmetric Gaussian beam (no boresight offset). Returns 0 if impossible.
     """
+    if not all(math.isfinite(v) for v in (a,w,required_capture)) or a <= 0 or w <= 0:
+        raise ValueError("Invalid aperture or required capture")
     if required_capture <= 0: return math.inf
     g0 = -math.expm1(-2*a*a/(w*w))
     if required_capture >= g0: return 0.0
-    hi = max(a + 2*w, 1e-4)
-    while gaussian_aperture_capture(a,w,hi) > required_capture:
-        hi *= 2
-        if hi > 1e3: raise RuntimeError('Cannot bracket critical offset')
+    # Gaussian tail bound: if r>a, capture <= exp[-2(r-a)^2/w²].
+    hi = a + w*math.sqrt(-math.log(required_capture)/2) + w
+    if not math.isfinite(hi): raise ValueError('Geometry exceeds numeric range')
     return brentq(lambda r: gaussian_aperture_capture(a,w,r)-required_capture,
                   0,hi, xtol=1e-12, rtol=1e-11)
 
@@ -126,9 +142,12 @@ def success_probability_for_transmittance(t: float,a: float,jitter_urad:float,li
 
     Jitter is independent zero-mean Gaussian in x/y (Rayleigh magnitude).
     """
-    if jitter_urad < 0: raise ValueError('Jitter cannot be negative')
-    if t <= 0: return 0.0
+    if not math.isfinite(jitter_urad) or jitter_urad < 0: raise ValueError('Invalid jitter')
+    if not math.isfinite(a) or a <= 0: raise ValueError('Invalid aperture')
+    if not math.isfinite(t) or not 0 <= t <= 1: raise ValueError('Invalid transmittance')
+    if t == 0: return 0.0
     needed = link.threshold_mw/(link.tx_mw*link.optical_efficiency*t)
+    if needed >= 1: return 0.0
     rcrit = critical_offset(a,link.beam_radius_m,needed)
     if math.isinf(rcrit): return 1.
     if jitter_urad == 0:
@@ -142,10 +161,10 @@ def conditional_availability(a:float,jitter_urad:float,link:Link) -> np.ndarray:
     if a <= 0: raise ValueError('a must be positive')
     values=[]
     for name in SCENARIO_NAMES:
-        q,prob=exact_distribution(scenarios_1550nm()[name],link.altitude_km,link.zenith_deg)
+        q,prob=exact_distribution(scenarios_1550nm(link.profile)[name],link.altitude_km,link.zenith_deg)
         trans=transmittance_from_q(q,link.convention)
         chance=[success_probability_for_transmittance(float(t),a,jitter_urad,link) for t in trans]
-        values.append(float(np.dot(prob,chance)))
+        values.append(float(np.clip(np.dot(prob,chance),0,1)))
     return np.array(values)
 
 
@@ -164,7 +183,7 @@ def worst_case_tv_greedy(chances, prior, rho:float) -> float:
     """
     p=validate_prior(prior).copy()
     a=np.asarray(chances,dtype=float)
-    if a.shape!=p.shape or np.any(a<0) or np.any(a>1):
+    if a.shape!=p.shape or np.any(~np.isfinite(a)) or np.any(a<0) or np.any(a>1):
         raise ValueError('Invalid availability vector')
     if not 0<=rho<=1: raise ValueError('TV radius must be in [0,1]')
     ranks=np.argsort(a)
@@ -181,13 +200,15 @@ def worst_case_tv_greedy(chances, prior, rho:float) -> float:
         p[donor]-=mass; p[recipient]+=mass; budget-=mass
         if p[donor]<=1e-14: hi-=1
         if 1-p[recipient]<=1e-14: lo+=1
-    return float(np.dot(p,a))
+    return float(np.clip(np.dot(p,a),0,1))
 
 
 def worst_case_tv_lp(chances, prior, rho:float):
     """Independent linear-programming reference for the greedy TV solver."""
     p0=validate_prior(prior)
-    a=np.asarray(chances)
+    a=np.asarray(chances,dtype=float)
+    if a.shape!=p0.shape or np.any(~np.isfinite(a)) or np.any(a<0) or np.any(a>1) or not 0<=rho<=1:
+        raise ValueError('Invalid LP inputs')
     n=len(p0)
     cost=np.r_[a,np.zeros(n)]
     A=[]; b=[]
@@ -203,17 +224,29 @@ def worst_case_tv_lp(chances, prior, rho:float):
 
 def availability(a,jitter_urad,link,prior=DEFAULT_PRIOR,rho=0.):
     vec=conditional_availability(a,jitter_urad,link)
-    if rho==0: return float(np.dot(validate_prior(prior),vec))
+    if rho==0: return float(np.clip(np.dot(validate_prior(prior),vec),0,1))
     return worst_case_tv_greedy(vec,prior,rho)
 
 
-def min_aperture_for_target(target,jitter_urad,link,prior=DEFAULT_PRIOR,rho=0.,a_lo=.025,a_hi=.50):
-    """Bisection in receiver aperture radius (nondecreasing availability)."""
+def min_aperture_for_target(target,jitter_urad,link,prior=DEFAULT_PRIOR,rho=0.,a_lo=.025,a_hi=.50,atol=1e-7):
+    """Return the feasible endpoint of a monotone search, within [a_lo,a_hi].
+
+    NaN means no feasible aperture in the search interval; consult the
+    atmosphere-only ceiling separately. Handles discontinuous zero-jitter steps.
+    """
     if not (0 < target < 1): raise ValueError('Invalid target')
+    if not all(math.isfinite(v) for v in (a_lo,a_hi,atol)) or not 0<a_lo<=a_hi or atol<=0:
+        raise ValueError('Invalid aperture interval or tolerance')
     f=lambda a: availability(a,jitter_urad,link,prior,rho)
-    if f(a_hi)<target-1e-9: return math.nan
+    if f(a_hi)<target: return math.nan
     if f(a_lo)>=target: return a_lo
-    return brentq(lambda a:f(a)-target,a_lo,a_hi,xtol=1e-5)
+    lo,hi=a_lo,a_hi
+    while hi-lo>atol:
+        mid=(lo+hi)/2
+        if mid==lo or mid==hi: break
+        if f(mid)>=target: hi=mid
+        else: lo=mid
+    return hi
 
 
 def sample_link(n:int,a:float,jitter_urad:float,link:Link,prior=DEFAULT_PRIOR,seed=20261123):
@@ -221,6 +254,9 @@ def sample_link(n:int,a:float,jitter_urad:float,link:Link,prior=DEFAULT_PRIOR,se
     then 2D pointing offsets; evaluate physical collection CDF directly.
     Does NOT sample Bernoulli successes from analytic availability.
     """
+    if not isinstance(n,(int,np.integer)) or n<2: raise ValueError('Need at least two draws')
+    if not math.isfinite(a) or a<=0 or not math.isfinite(jitter_urad) or jitter_urad<0:
+        raise ValueError('Invalid aperture or jitter')
     prior=validate_prior(prior)
     rng=np.random.default_rng(seed)
     which=rng.choice(len(SCENARIO_NAMES),size=n,p=prior)
@@ -230,7 +266,7 @@ def sample_link(n:int,a:float,jitter_urad:float,link:Link,prior=DEFAULT_PRIOR,se
     for idx,name in enumerate(SCENARIO_NAMES):
         mask=which==idx; k=int(mask.sum())
         if not k:continue
-        scenario=scenarios_1550nm()[name]
+        scenario=scenarios_1550nm(link.profile)[name]
         qv=np.zeros(k)
         for slab in scenario.layers:
             d=max(0.,min(link.altitude_km,slab.top_km)-slab.bottom_km)/math.cos(math.radians(link.zenith_deg))
@@ -244,7 +280,7 @@ def sample_link(n:int,a:float,jitter_urad:float,link:Link,prior=DEFAULT_PRIOR,se
     x=rng.normal(0,sigma,n);y=rng.normal(0,sigma,n)
     capture=gaussian_aperture_capture(a,link.beam_radius_m,np.hypot(x,y))
     power=link.tx_mw*link.optical_efficiency*t*capture
-    passed=(power>=link.threshold_mw)
+    passed=(power>=link.threshold_mw) & (link.tx_mw*link.optical_efficiency*t>link.threshold_mw)
     return {'n':int(n),'success_count':int(passed.sum()),'availability':float(passed.mean()),
             'mean_received_mw':float(power.mean()),'std_received_mw':float(power.std(ddof=1))}
 
@@ -261,14 +297,14 @@ def weather_limited_ceiling(link:Link, prior=DEFAULT_PRIOR, rho=0.):
     """Upper bound on availability for ANY finite aperture and jitter.
 
     In the a -> infinity limit capture -> 1 for each finite offset, so only
-    states with P_tx*eta*T >= power threshold can ever pass. Hence this
+    states with P_tx*eta*T > power threshold can ever pass at finite radius. Hence this
     is a global model-feasibility certificate, not merely grid infeasibility.
     """
     limits=[]
     for name in SCENARIO_NAMES:
-        q,p=exact_distribution(scenarios_1550nm()[name],link.altitude_km,link.zenith_deg)
+        q,p=exact_distribution(scenarios_1550nm(link.profile)[name],link.altitude_km,link.zenith_deg)
         t=transmittance_from_q(q,link.convention)
-        limits.append(float(np.dot(p,link.tx_mw*link.optical_efficiency*t>=link.threshold_mw)))
+        limits.append(float(np.dot(p,link.tx_mw*link.optical_efficiency*t>link.threshold_mw)))
     conditional=np.array(limits)
     cap=(float(np.dot(validate_prior(prior),conditional)) if rho==0 else
          worst_case_tv_greedy(conditional,prior,rho))
@@ -276,7 +312,7 @@ def weather_limited_ceiling(link:Link, prior=DEFAULT_PRIOR, rho=0.):
 
 
 def critical_tv_radius(target:float,link:Link,prior=DEFAULT_PRIOR):
-    """Smallest total-variation radius where atmospheric ceiling < target.
+    """Boundary TV radius where the ceiling reaches target (strict failure beyond).
 
     This is the exact theoretical break-even radius for the model's weather
     frequency ambiguity, found with a one-dimensional monotone bisection.
