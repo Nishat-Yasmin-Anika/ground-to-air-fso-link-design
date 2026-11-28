@@ -42,4 +42,3 @@ jobs:
 
       - name: Verify regenerated artifacts
         run: python verify_manifest.py
-
