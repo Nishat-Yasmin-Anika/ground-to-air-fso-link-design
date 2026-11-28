@@ -1,258 +1,187 @@
-<p align="center">
-  <img src="assets/cover.svg" width="100%" alt="Ground-to-air optical communication">
-</p>
-
 # Atmospheric-Model Sensitivity in Ground-to-Air FSO Receiver Design
 
-**Nishat Yasmin Anika**  
-Electronics and Communication Engineering (ECE)  
-Khulna University of Engineering & Technology (KUET)
-
-[![Tests](https://github.com/Nishat-Yasmin-Anika/ground-to-air-fso-link-design/actions/workflows/python-tests.yml/badge.svg)](https://github.com/Nishat-Yasmin-Anika/ground-to-air-fso-link-design/actions)
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Nishat-Yasmin-Anika/ground-to-air-fso-link-design/blob/main/notebooks/FSO_Link_Design_Colab.ipynb)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-
-## 1. Research Overview
-
-This computational study investigates the sensitivity of
-ground-to-air free-space optical (FSO) receiver aperture
-design to atmospheric attenuation, Gaussian beam collection,
-pointing displacement and weather probability uncertainty.
-
-The objective is to determine the minimum receiver aperture
-required to satisfy a specified received-optical-power
-availability target under nominal and uncertain weather
-distributions.
-
-The study is a research portfolio and numerical method
-demonstration. It is not an experimentally calibrated
-communication system or a claim of algorithmic novelty.
-
-## 2. Research Questions
-
-- How does atmospheric model interpretation affect
-  receiver aperture requirements?
-- How does pointing jitter influence optical collection
-  and modeled link availability?
-- What is the aperture cost of robustness against weather
-  probability uncertainty?
-- Under what atmospheric conditions does the specified
-  availability target become infeasible?
-
-## 3. Mathematical Framework
-
-The received optical power is modeled as
-
-$$
-P_r = P_t \eta T_{\mathrm{atm}} G(a,r)
-$$
-
-where:
-
-| Symbol | Definition |
-|---|---|
-| $P_t$ | Transmitted optical power |
-| $\eta$ | Optical efficiency |
-| $T_{\mathrm{atm}}$ | Atmospheric power transmittance |
-| $G(a,r)$ | Gaussian beam collection fraction |
-| $a$ | Receiver aperture radius |
-| $r$ | Beam displacement |
-
-The minimum aperture is obtained subject to a worst-case
-availability constraint over a total-variation probability
-ambiguity set.
-
-The atmospheric model is evaluated under explicitly
-separated attenuation coefficient interpretations.
-Neither interpretation is assumed to establish the
-physical accuracy of the original printed coefficients.
-
-## 4. Research Methodology
-
 <p align="center">
-  <img src="assets/method.svg" width="100%" alt="Research methodology">
+  <b>Nishat Yasmin Anika</b><br>
+  Department of Electronics and Communication Engineering<br>
+  Khulna University of Engineering &amp; Technology (KUET), Bangladesh
 </p>
 
-The computational framework combines:
+<p align="center">
+  <a href="https://github.com/Nishat-Yasmin-Anika/ground-to-air-fso-link-design/actions/workflows/python-tests.yml"><img src="https://github.com/Nishat-Yasmin-Anika/ground-to-air-fso-link-design/actions/workflows/python-tests.yml/badge.svg" alt="Numerical verification"></a>
+  <a href="https://colab.research.google.com/github/Nishat-Yasmin-Anika/ground-to-air-fso-link-design/blob/main/notebooks/FSO_Link_Design_Colab.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT license"></a>
+</p>
 
-1. Altitude-dependent layered atmospheric attenuation.
-2. Exact circular-aperture Gaussian beam integration.
-3. Independent Gaussian pointing displacement components.
-4. Conditional received-power availability.
-5. Total-variation distributionally robust optimization.
-6. Independent quadrature, linear programming and
-   Monte Carlo verification.
+<p align="center">
+  <a href="#abstract">Abstract</a> · <a href="#model-and-method">Model</a> · <a href="#results-and-discussion">Results</a> · <a href="#numerical-verification">Verification</a> · <a href="#reproduction">Reproduction</a> · <a href="#references">References</a>
+</p>
 
-## 5. Reference Simulation Parameters
+<p align="center"><img src="assets/cover.svg" width="100%" alt="Ground-to-air free-space optical link"></p>
 
-| Parameter | Illustrative value |
+## Abstract
+
+<p align="justify">The receiver aperture required for a ground-to-air free-space optical (FSO) link depends on atmospheric attenuation, beam spreading and pointing errors. This study examines how different interpretations of published atmospheric attenuation coefficients affect the aperture needed to meet a prescribed received-power availability. A layered atmospheric model is combined with exact integration of a displaced Gaussian beam over a circular receiver. The weather-scenario probabilities are allowed to vary within a total-variation (TV) ambiguity set. For a 3 km vertical link with a 92% availability target and 15 µrad per-axis pointing jitter, the nominal receiver diameter is 9.47 cm under literal power-decibel conversion and 21.95 cm under the equation-as-printed exponential interpretation. At a TV radius of 0.08, the latter cannot attain the target at any finite aperture. Independent quadrature, linear programming and Monte Carlo simulations are used to check the calculations. The reported values are conditional on the assumed optical parameters and weather distributions.</p>
+
+**Keywords:** Free-space optical communication, atmospheric attenuation, Gaussian beams, pointing errors, receiver aperture, distributionally robust optimization.
+
+## Research context
+
+<p align="justify">Erdogan et al. [1] describe altitude-dependent attenuation using horizontal atmospheric layers with scenario-specific coefficients. Their tables label the coefficients in dB/km, while the transmittance equation uses a natural exponential. The two readings of the printed coefficients produce different power transmittances. This work retains them as separate cases and examines their effect on receiver sizing. A second comparison uses the clear-weather description in the text of the same source, and a third replaces the fog coefficients with a radiation-fog relation [2]. The original coefficient generation and atmospheric calibration are outside the scope of this study. Earlier work on pointing errors [3] and multilayer airborne optical links [4] provides the optical-link context. The probability ambiguity set follows the total-variation formulation used in distributionally robust optimization [5].</p>
+
+## Model and method
+
+<p align="center"><img src="assets/method.svg" width="100%" alt="Atmospheric layers, optical collection and availability calculation"></p>
+<p align="center"><em>Fig. 1. Calculation sequence for the receiver design problem.</em></p>
+
+<p align="justify">For receiver altitude H and zenith angle θ, the length of the link in the flat-layer approximation is H sec θ. Within each atmospheric scenario, the path crosses a finite set of categorical layer states. For a particular state combination, the integrated printed coefficient is Q. The primary model uses the power-decibel interpretation and the alternative uses the exponential form printed in [1]:</p>
+
+$$
+Q=\sum_j c_j d_j,\qquad T_{\mathrm{dB}}=10^{-Q/10},\qquad T_{\mathrm{exp}}=e^{-Q}.
+$$
+
+<p align="justify">The received optical power is the product of the transmitted power, optical efficiency, atmospheric transmittance and the fraction of the Gaussian beam collected by the receiver. For a circular aperture of radius a, beam radius w and radial displacement r, the collection fraction can be expressed as a noncentral chi-square cumulative distribution function.</p>
+
+$$
+P_r=P_t\eta T G(a,w,r),\qquad G(a,w,r)=F_{\chi'^2_2}\left(\frac{4a^2}{w^2};\frac{4r^2}{w^2}\right).
+$$
+
+<p align="justify">Independent zero-mean Gaussian pointing displacements give a Rayleigh distribution for the radial displacement. For each atmospheric state, the maximum displacement compatible with the power threshold is found numerically. The resulting conditional success probabilities are averaged over the layer states to obtain the availability Aᵢ for each weather scenario. For nominal scenario probabilities p and an alternative distribution q, the aperture design problem is</p>
+
+$$
+\min_{a\in[0.025,\,0.50]\,\mathrm{m}} a\quad\text{subject to}\quad \min_{\boldsymbol q\in\mathcal U_\rho}\sum_i q_i A_i(a)\geq A_{\mathrm{target}},
+$$
+
+$$
+\mathcal U_\rho=\left\{\boldsymbol q\geq0:\sum_i q_i=1,\;\frac12\sum_i |q_i-p_i|\leq\rho\right\}.
+$$
+
+<p align="justify">The inner minimization transfers probability from scenarios with higher availability to those with lower availability. The outer minimization uses bisection because availability is nondecreasing with aperture radius. An atmospheric feasibility ceiling is calculated separately to distinguish an insufficient aperture search interval from a target that cannot be met by any finite aperture.</p>
+
+The full derivations and implementation mapping are in the [mathematical supplement](docs/MATHEMATICAL_DERIVATIONS.md) and [technical note](docs/TECHNICAL_NOTE.md).
+
+<details>
+<summary>Reference simulation parameters</summary>
+
+| Quantity | Assumed value |
 |---|---:|
 | Optical wavelength | 1550 nm |
 | Receiver altitude | 3 km |
-| Zenith angle | 0 degrees |
-| Transmitter power | 50 mW |
+| Zenith angle | 0° |
+| Transmitter optical power | 50 mW |
 | Optical efficiency | 0.70 |
 | Beam waist radius | 25 mm |
-| Divergence half-angle | 55 microradians |
-| Per-axis pointing jitter | 15 microradians |
+| Divergence half-angle | 55 µrad |
+| Per-axis angular jitter (standard deviation) | 15 µrad |
 | Received-power threshold | 2 mW |
-| Availability target | 92% |
-| Reference TV ambiguity radius | 0.04 |
+| Availability target | 0.92 |
+| Reference TV radius | 0.04 |
 
-These parameters are illustrative and are not
-specifications of a validated hardware system.
+The nominal probabilities of clear weather, pollution, fog, rain and snow are 0.76, 0.10, 0.07, 0.04 and 0.03, respectively. The probabilities and optical parameters are illustrative.
 
-## 6. Principal Results
+</details>
 
-Minimum receiver aperture diameter for the 92%
-modeled availability target:
+## Results and discussion
 
-| Atmospheric model | Nominal | TV = 0.04 | TV = 0.08 |
+<p align="justify">Table 1 gives the minimum receiver diameter for the reference link. The target is a 92% probability of meeting or exceeding the 2 mW received-power threshold.</p>
+
+<p align="center"><em>Table 1. Minimum receiver diameter (cm) for a 92% availability target.</em></p>
+
+| Atmospheric case | Nominal (ρ = 0) | ρ = 0.04 | ρ = 0.08 |
 |---|---:|---:|---:|
-| Literal dB/km | 9.47 cm | 11.82 cm | 13.62 cm |
-| Legacy exponential | 21.95 cm | 27.01 cm | Infeasible |
-| Clear-weather prose alternative | 9.42 cm | 11.75 cm | 13.62 cm |
-| Radiation-fog stress case | 15.65 cm | Infeasible | Infeasible |
+| Table II, literal dB/km | 9.47 | 11.82 | 13.62 |
+| Table II, exponential interpretation | 21.95 | 27.01 | Infeasible |
+| Clear-weather prose alternative | 9.42 | 11.75 | 13.62 |
+| Radiation-fog stress case | 15.65 | Infeasible | Infeasible |
 
-These results demonstrate that atmospheric model
-interpretation can substantially change the calculated
-aperture requirement and feasibility conclusion.
+<p align="justify">With the literal dB/km interpretation, increasing ρ from zero to 0.04 raises the required diameter from 9.47 to 11.82 cm. For the exponential interpretation, the same change raises it from 21.95 to 27.01 cm. At ρ = 0.08, the atmospheric ceiling of the exponential case is 89.2%, below the specified 92% target. Enlarging the receiver cannot recover power that has already been lost in the atmosphere. The radiation-fog case reaches a ceiling of 89% at ρ = 0.04 and is therefore also infeasible at that target.</p>
 
-They are conditional model predictions, not measured
-operational availability or hardware recommendations.
+<p align="center"><a href="results/figures/11_model_and_target_sensitivity.svg"><img src="results/figures/11_model_and_target_sensitivity.png" width="95%" alt="Receiver diameter and feasibility for alternative atmospheric models and availability targets"></a></p>
+<p align="center"><em>Fig. 2. Aperture requirements across atmospheric cases and availability targets. Select the figure for the vector version.</em></p>
 
-### 6.1. Atmospheric Model and Target Sensitivity
+<p align="justify">The results in Table 1 isolate the consequences of changing the atmospheric assumptions while holding the remaining link parameters fixed. They do not resolve which coefficient interpretation is physically correct. The separate clear-weather and radiation-fog cases show how changes to individual atmospheric layers affect the same design problem.</p>
 
-![Atmospheric model sensitivity](results/figures/11_model_and_target_sensitivity.png)
+<details>
+<summary>Pointing jitter and aperture sensitivity</summary>
 
-### 6.2. Receiver Aperture and Pointing Jitter
+<p align="center"><a href="results/figures/04_minimum_aperture_frontier.svg"><img src="results/figures/04_minimum_aperture_frontier.png" width="95%" alt="Minimum aperture diameter versus pointing jitter"></a></p>
+<p align="center"><em>Fig. 3. Aperture requirements as a function of per-axis pointing jitter.</em></p>
 
-![Minimum aperture frontier](results/figures/04_minimum_aperture_frontier.png)
+<p align="center"><a href="results/figures/03_availability_vs_aperture.svg"><img src="results/figures/03_availability_vs_aperture.png" width="95%" alt="Availability as a function of aperture size"></a></p>
+<p align="center"><em>Fig. 4. Received-power availability versus receiver aperture.</em></p>
 
-### 6.3. Availability and Aperture Size
+</details>
 
-![Availability versus aperture](results/figures/03_availability_vs_aperture.png)
+All [12 figures, 11 numerical tables and simulation metadata](results/README.md) are available. The values in Table 1 are taken from [the model and target sensitivity table](results/tables/09_model_and_target_sensitivity.csv).
 
-### 6.4. Independent Numerical Verification
+## Numerical verification
 
-![Aperture integral verification](results/figures/01_aperture_integral_validation.png)
+<p align="justify">The Gaussian aperture expression is checked by independent Bessel and Cartesian quadrature. A separate linear program checks the probability-transfer solution. Monte Carlo simulations sample atmospheric states and Gaussian pointing displacements directly, rather than drawing successes from the analytic availability. Wilson intervals describe the sampling uncertainty of the simulated success proportions.</p>
 
-### 6.5. Monte Carlo Verification
+<p align="center"><a href="results/figures/08_monte_carlo_validation.svg"><img src="results/figures/08_monte_carlo_validation.png" width="85%" alt="Monte Carlo comparison with exact availability"></a></p>
+<p align="center"><em>Fig. 5. Monte Carlo estimates and analytic received-power availability.</em></p>
 
-![Monte Carlo verification](results/figures/08_monte_carlo_validation.png)
+<p align="justify">Version 4.1.0 contains 44 automated tests. The continuous integration workflow also regenerates the full experiments and compares all 11 CSV tables against the committed results, excluding execution time. File hashes check the integrity of the generated artifacts. These tests assess numerical agreement within the model.</p>
 
-See the [complete results gallery](results/README.md)
-for all figures, numerical tables and metadata.
+<details>
+<summary>Independent aperture integral comparison</summary>
 
-## 7. Mathematical and Numerical Verification
+<p align="center"><a href="results/figures/01_aperture_integral_validation.svg"><img src="results/figures/01_aperture_integral_validation.png" width="85%" alt="Comparison of independent Gaussian aperture integration methods"></a></p>
+<p align="center"><em>Fig. 6. Numerical verification of the circular-aperture integral.</em></p>
 
-Verification includes:
+</details>
 
-- Analytical Gaussian aperture identities.
-- Independent Bessel and Cartesian numerical integration.
-- Independent linear programming verification.
-- Minimum-aperture feasibility checks.
-- Zero-jitter and threshold-equality edge cases.
-- Published atmospheric coefficient transcription checks.
-- Multi-seed Monte Carlo simulations.
-- Invalid-input regression tests.
-- SHA-256 result and generating-source integrity checks.
-- Automated comparison of regenerated numerical tables.
+[Verification methods and computational complexity](docs/COMPLEXITY_AND_VERIFICATION.md) · [GitHub Actions](https://github.com/Nishat-Yasmin-Anika/ground-to-air-fso-link-design/actions)
 
-The automated test suite includes 44 mathematical and regression tests.
-GitHub Actions provides the status of the committed version.
+## Limitations
 
-## 8. Repository Structure
+<p align="justify">The atmospheric coefficients have not been calibrated against local weather observations. Layer-state independence and the nominal weather probabilities are assumptions, and the TV radius is a sensitivity parameter. The Gaussian beam is an equivalent intensity profile with assumed divergence and waist. The model omits turbulence, scintillation, receiver field-of-view effects, photodetector noise and temporal pointing dynamics. Availability denotes the probability that collected optical power meets or exceeds a threshold. No bit-error rate or measured link uptime is reported. The radiation-fog relation is used only as a separate coefficient sensitivity case. Experimental verification of these assumptions and receiver specifications would be required before applying the design to hardware.</p>
 
-```text
-src/          Canonical atmospheric and optical models
-tests/        Mathematical and regression tests
-notebooks/    Standalone Google Colab notebook
-results/      Figures, CSV tables and metadata
-docs/         Technical notes and reference documentation
-assets/       Project illustrations
-run_study.py  Experiment generation
-```
+## Reproduction
 
-## 9. Reproducibility
+[Open the standalone notebook in Google Colab](https://colab.research.google.com/github/Nishat-Yasmin-Anika/ground-to-air-fso-link-design/blob/main/notebooks/FSO_Link_Design_Colab.ipynb) and select **Runtime → Run all**. The notebook uses CPU computation, creates the source files, runs the tests and full experiments and exports the results. No Google Drive mount is needed.
 
-### Google Colab
-
-Open the notebook using the Colab badge above.
-Select Runtime > Run all.
-
-No Google Drive mount or GPU is required.
-
-The notebook generates the source files, executes the
-tests, runs the experiments and exports a GitHub update ZIP.
-
-### Local Python
+<details>
+<summary>Local execution and regression comparison (Linux)</summary>
 
 ```bash
-python -m pip install -r requirements.txt
+python -m pip install -r requirements.txt -r requirements-lock.txt
 python -m unittest discover -s tests -v
-python run_study.py
+python build_notebook.py --check
 python verify_manifest.py
-python build_notebook.py
+
+REF=$(mktemp -d)
+cp -r results/tables "$REF/tables"
+FAST_MODE=0 python run_study.py
+python compare_results.py "$REF/tables" results/tables
+python verify_manifest.py
 ```
 
-Set the environment variable `FAST_MODE=0` for the
-full Monte Carlo configuration.
+Use `python build_notebook.py` after editing a canonical file. Full mode uses 100,000 samples in the largest Monte Carlo runs. See [update instructions](UPDATE_GITHUB.md) for the notebook and repository workflow.
 
-The notebook is generated from canonical Python files.
-Do not edit the generated notebook independently.
+</details>
 
-## 10. Scientific Limitations
+| Resource | Description |
+|---|---|
+| [src/](src/) | Atmospheric and optical link models |
+| [run_study.py](run_study.py) | Numerical experiments and figures |
+| [tests/](tests/) | Mathematical and regression tests |
+| [compare_results.py](compare_results.py) | Numerical table comparison |
+| [notebooks/](notebooks/) | Standalone research notebook |
+| [results/](results/README.md) | Figures, tables and run metadata |
+| [docs/](docs/) | Derivations, source mapping and technical notes |
 
-- The atmospheric coefficient conventions require further
-  verification against their original derivation.
-- Weather probabilities and TV ambiguity radii are illustrative.
-- Optical parameters and receiver threshold are hypothetical.
-- Atmospheric turbulence and scintillation are not modeled.
-- Receiver field of view and detector noise are excluded.
-- BER and communication-level outage are not evaluated.
-- No experimental hardware validation has been performed.
-- The radiation-fog comparison is a sensitivity case,
-  not validation of the airborne atmospheric model.
+## References
 
-These limitations define potential directions for
-future supervised research.
+1. E. Erdogan et al., “Modeling Atmospheric Attenuation in Vertical FSO Links: An Altitude-Aware Piecewise Framework,” *IEEE Vehicular Technology Magazine*, 2026. [DOI](https://doi.org/10.1109/MVT.2026.3687349) · [Author manuscript](https://arxiv.org/html/2604.18207v1).
+2. M. Al Naboulsi, H. Sizun and F. de Fornel, “Fog attenuation prediction for optical and infrared waves,” *Optical Engineering*, vol. 43, pp. 319–329, 2004. The coefficient relation, units and validity range used here are documented in the [source map](docs/SOURCE_MAP.md).
+3. A. A. Farid and S. Hranilovic, “Outage Capacity Optimization for Free-Space Optical Links with Pointing Errors,” 2007. [DOI](https://doi.org/10.1109/JLT.2007.899174).
+4. M. Elamassie and M. Uysal, “Multi-Layer Airborne FSO Systems: Performance Analysis and Optimization,” 2025. [DOI](https://doi.org/10.1109/TCOMM.2024.3471995).
+5. H. Rahimian and S. Mehrotra, “Frameworks and Results in Distributionally Robust Optimization,” 2022. [DOI](https://doi.org/10.5802/ojmo.15).
 
-## 11. Documentation and References
+The [source-to-implementation map](docs/SOURCE_MAP.md) identifies the equations and data adopted from these references and the assumptions added in this study.
 
-- [Detailed mathematical derivations](docs/MATHEMATICAL_DERIVATIONS.md)
-- [Technical note](docs/TECHNICAL_NOTE.md)
-- [Scientific source map](docs/SOURCE_MAP.md)
-- [Complexity and verification](docs/COMPLEXITY_AND_VERIFICATION.md)
-- [Complete results](results/README.md)
-- [Update instructions](UPDATE_GITHUB.md)
+## Citation and license
 
-Principal atmospheric reference:
+Software citation metadata are available in [CITATION.cff](CITATION.cff). Cite the relevant scientific publications separately when using their models. The code is distributed under the [MIT License](LICENSE).
 
-Erdogan et al., Modeling Atmospheric Attenuation in
-Vertical FSO Links: An Altitude-Aware Piecewise Framework,
-IEEE Vehicular Technology Magazine, 2026.
-
-DOI: https://doi.org/10.1109/MVT.2026.3687349
-
-Further references and applicability qualifications
-are documented in the scientific source map.
-
-## 12. License and Attribution
-
-Released under the [MIT License](LICENSE).
-
-AI tools assisted implementation and review. The author
-is responsible for understanding, reviewing and approving
-the scientific assumptions and reported findings.
-
-
-## Citation
-
-If you use this computational framework, please cite the
-software using [CITATION.cff](CITATION.cff).
-
-The original scientific publications underlying the models
-should be cited separately, as documented in the
-[scientific source map](docs/SOURCE_MAP.md).
-
+AI tools assisted implementation and review. The author is responsible for the scientific assumptions and findings.
