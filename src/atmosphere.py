@@ -171,7 +171,12 @@ def loss_db_from_q(q: float | np.ndarray,
     """Equivalent power loss in dB, *after* choosing a convention."""
     if convention not in CONVENTIONS:
         raise ValueError('Unknown convention')
-    return np.asarray(q) * (10. / log(10.) if convention == PAPER_EXPONENTIAL else 1.)
+    q = np.asarray(q, dtype=float)
+
+    if np.any(~np.isfinite(q)) or np.any(q < 0):
+        raise ValueError('Q must be finite and nonnegative')
+
+    return q * (10. / log(10.) if convention == PAPER_EXPONENTIAL else 1.)
 
 
 def effective_transmittance(scenario: Scenario, altitude_km: float,
@@ -256,8 +261,18 @@ def sample_q(scenario: Scenario, altitude_km: float, zenith_deg: float = 0,
 
 def wilson_interval(successes: int, n: int, z: float = 1.959963984540054):
     """Wilson score interval for Bernoulli trials, approximately 95% for z=1.96."""
-    if n < 1 or not 0 <= successes <= n:
+    if (
+        not isinstance(n, (int, np.integer))
+        or not isinstance(successes, (int, np.integer))
+        or isinstance(n, (bool, np.bool_))
+        or isinstance(successes, (bool, np.bool_))
+        or n < 1
+        or not 0 <= successes <= n
+    ):
         raise ValueError('Invalid count')
+
+    if not isfinite(z) or z <= 0:
+        raise ValueError('Confidence multiplier must be finite and positive')
     p = successes / n
     denom = 1 + z*z/n
     center = (p + z*z/(2*n))/denom

@@ -126,4 +126,74 @@ class AuditChecks(unittest.TestCase):
         self.assertAlmostEqual(worst_case_tv_greedy(a,q,0),np.dot(a,q))
         self.assertAlmostEqual(worst_case_tv_greedy(a,q,1),a.min())
 
+
+class InputValidationRegressionTests(unittest.TestCase):
+
+    def test_attenuation_invalid_inputs(self):
+        for convention in [DB_LABEL, PAPER_EXPONENTIAL]:
+            for bad in [-1, float("nan"), float("inf"),
+                        -float("inf"), [0, -1]]:
+                with self.subTest(convention=convention, value=bad):
+                    with self.assertRaises(ValueError):
+                        loss_db_from_q(bad, convention)
+
+    def test_attenuation_valid_inputs(self):
+        self.assertAlmostEqual(loss_db_from_q(0), 0)
+        self.assertAlmostEqual(loss_db_from_q(10), 10)
+        self.assertAlmostEqual(
+            loss_db_from_q(1, PAPER_EXPONENTIAL),
+            10 / math.log(10)
+        )
+
+    def test_wilson_invalid_multiplier(self):
+        from fso_link import wilson_score
+
+        for bad in [-1.96, 0, float("nan"), float("inf")]:
+            with self.subTest(z=bad):
+                with self.assertRaises(ValueError):
+                    wilson_score(5, 10, bad)
+
+    def test_wilson_invalid_counts(self):
+        from fso_link import wilson_score
+
+        for count, n in [(-1, 10), (11, 10), (0, 0),
+                         (2.5, 10), (2, 10.5), (True, 10)]:
+            with self.subTest(count=count, n=n):
+                with self.assertRaises(ValueError):
+                    wilson_score(count, n)
+
+    def test_wilson_valid_interval(self):
+        from fso_link import wilson_score
+
+        lower, upper = wilson_score(5, 10)
+
+        self.assertAlmostEqual(lower, 0.236593, places=5)
+        self.assertAlmostEqual(upper, 0.763407, places=5)
+
+
+class AtmosphericWilsonRegressionTests(unittest.TestCase):
+
+    def test_atmospheric_wilson_validation(self):
+        from atmosphere import wilson_interval
+        from fso_link import wilson_score
+
+        for bad in [-1, 0, float("nan"), float("inf")]:
+            with self.assertRaises(ValueError):
+                wilson_interval(5, 10, bad)
+
+        for successes, n in [
+            (-1, 10), (11, 10), (0, 0),
+            (2.5, 10), (2, 10.5), (True, 10)
+        ]:
+            with self.assertRaises(ValueError):
+                wilson_interval(successes, n)
+
+        for successes, n in [(0, 10), (5, 10), (10, 10)]:
+            np.testing.assert_allclose(
+                wilson_interval(successes, n),
+                wilson_score(successes, n),
+                rtol=1e-12,
+                atol=1e-12
+            )
+
 if __name__=='__main__': unittest.main()

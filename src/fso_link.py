@@ -286,7 +286,19 @@ def sample_link(n:int,a:float,jitter_urad:float,link:Link,prior=DEFAULT_PRIOR,se
 
 
 def wilson_score(count:int,n:int,z=1.959963984540054):
-    if n<1 or count<0 or count>n:raise ValueError('Invalid count')
+    if (
+        not isinstance(n, (int, np.integer))
+        or not isinstance(count, (int, np.integer))
+        or isinstance(n, (bool, np.bool_))
+        or isinstance(count, (bool, np.bool_))
+        or n < 1
+        or count < 0
+        or count > n
+    ):
+        raise ValueError('Invalid count')
+
+    if not math.isfinite(z) or z <= 0:
+        raise ValueError('Confidence multiplier must be finite and positive')
     phat=count/n; denom=1+z*z/n
     center=(phat+z*z/(2*n))/denom
     delta=z/denom*math.sqrt(phat*(1-phat)/n+z*z/(4*n*n))

@@ -1,15 +1,38 @@
 cff-version: 1.2.0
-message: "If you use this research-preparation code, please cite the repository and the atmospheric model source separately."
-title: "Uncertainty-aware receiver design for ground-to-air FSO links"
+message: "If you use this software, please cite this repository and the relevant scientific references separately."
+
+title: "Atmospheric-Model Sensitivity in Ground-to-Air FSO Receiver Design"
+
 type: software
+version: 4.1.0
+
 authors:
   - family-names: "Anika"
     given-names: "Nishat Yasmin"
-date-released: 2026-11-23
+    affiliation: "Khulna University of Engineering & Technology"
+
+repository-code: "https://github.com/Nishat-Yasmin-Anika/ground-to-air-fso-link-design"
+
 license: MIT
+date-released: 2026-11-28
+
+abstract: >
+  A reproducible computational study investigating ground-to-air
+  free-space optical receiver aperture requirements under
+  atmospheric attenuation, Gaussian beam collection, pointing
+  displacement and weather probability uncertainty.
+  The framework incorporates total-variation distributionally
+  robust optimization and independent numerical verification.
+  The results represent conditional model predictions rather
+  than experimentally validated communication performance.
+
 keywords:
   - free-space optical communication
-  - optical receiver aperture
+  - ground-to-air optical links
   - atmospheric attenuation
+  - Gaussian beam propagation
+  - optical receiver aperture
   - pointing errors
-  - robust optimization
+  - distributionally robust optimization
+  - scientific computing
+  - numerical verification

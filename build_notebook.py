@@ -3,10 +3,29 @@ import argparse,hashlib,json
 from pathlib import Path
 ROOT=Path(__file__).resolve().parent
 DEST=ROOT/'notebooks/FSO_Link_Design_Colab.ipynb'
-FILES=['src/atmosphere.py','src/fso_link.py','run_study.py','tests/test_link.py','tests/test_audit.py',
-       'README.md','docs/SOURCE_MAP.md','docs/TECHNICAL_NOTE.md','docs/COMPLEXITY_AND_VERIFICATION.md',
-       'results/README.md','requirements.txt','requirements-lock.txt','verify_manifest.py','build_notebook.py',
-       'UPDATE_GITHUB.md','.github/workflows/python-tests.yml']
+FILES = ['src/atmosphere.py',
+ 'src/fso_link.py',
+ 'run_study.py',
+ 'compare_results.py',
+ 'tests/test_link.py',
+ 'tests/test_audit.py',
+ 'README.md',
+ 'docs/SOURCE_MAP.md',
+ 'docs/TECHNICAL_NOTE.md',
+ 'docs/COMPLEXITY_AND_VERIFICATION.md',
+ 'results/README.md',
+ 'requirements.txt',
+ 'requirements-lock.txt',
+ 'verify_manifest.py',
+ 'build_notebook.py',
+ 'UPDATE_GITHUB.md',
+ '.github/workflows/python-tests.yml',
+ 'docs/MATHEMATICAL_DERIVATIONS.md',
+ 'CITATION.cff',
+ 'LICENSE',
+ 'assets/cover.svg',
+ 'assets/method.svg',
+ '.gitignore']
 
 def build():
     cells=[]
@@ -15,7 +34,7 @@ def build():
            'metadata':{},'source':source.splitlines(keepends=True)}
         if kind=='code':c.update(execution_count=None,outputs=[])
         cells.append(c)
-    add('markdown', '''# Atmospheric-model sensitivity in ground-to-air FSO receiver design — v4
+    add('markdown', '''# Atmospheric-model sensitivity in ground-to-air FSO receiver design — v4.1
 **Nishat Yasmin Anika · ECE · KUET**  
 Standalone CPU notebook generated from canonical source files. Run all cells in order; no Drive mount required.
 
@@ -29,8 +48,8 @@ from pathlib import Path
 missing = [p for p in ('numpy','scipy','matplotlib') if importlib.util.find_spec(p) is None]
 if missing:
     subprocess.check_call([sys.executable,'-m','pip','install',*missing])
-PROJECT_ROOT = Path.cwd() / 'fso_v4_project'
-PROJECT_ROOT.mkdir(exist_ok=True)
+import tempfile
+PROJECT_ROOT = Path(tempfile.mkdtemp(prefix='fso_v41_project_', dir=Path.cwd()))
 print('Project:', PROJECT_ROOT)''')
     add('markdown','## 2. Canonical source files\nThese cells are generated from the repository. To edit later, change the standalone source files and rebuild this notebook rather than maintaining two copies.')
     for file in FILES:
@@ -53,7 +72,7 @@ with (PROJECT_ROOT/'results/tables/09_model_and_target_sensitivity.csv').open() 
     for row in csv.DictReader(f):
         if float(row['target']) == .92:
             print(row['profile'], 'TV='+row['tv_radius'], 'diameter_cm='+row['diameter_cm'], 'ceiling='+row['finite_aperture_ceiling'], row['status'])''')
-    add('markdown','## 6. Export GitHub-ready update\nDownload `github_update.zip` from Colab Files. This archive uses repository-relative paths. Preserve existing LICENSE, CITATION.cff, `.git` and other assets. Review `UPDATE_GITHUB.md` before uploading.')
+    add('markdown','## 6. Export GitHub-ready update\nDownload `github_update.zip` from Colab Files. This archive uses repository-relative paths. Preserve the existing `.git` history. License, citation metadata and assets are included. Review `UPDATE_GITHUB.md` before uploading.')
     add('code','''from zipfile import ZipFile, ZIP_DEFLATED
 subprocess.run([sys.executable,'build_notebook.py'],cwd=PROJECT_ROOT,check=True)
 archive=Path.cwd()/'github_update.zip'

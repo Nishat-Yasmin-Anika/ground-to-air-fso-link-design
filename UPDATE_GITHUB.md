@@ -1,21 +1,63 @@
-# Merge v4 into the existing repository
+# Updating the FSO Research Repository
 
-1. Download and extract the GitHub update ZIP. It contains repository-relative paths; do not upload an extra wrapper folder. Preserve the existing `.git` folder, LICENSE, CITATION.cff, assets and author attribution.
-2. Replace README.md, `docs/`, `src/`, `tests/`, `run_study.py`, `requirements.txt`, `results/`, and `notebooks/FSO_Link_Design_Colab.ipynb` with the supplied versions. Add `build_notebook.py`, `verify_manifest.py`, `requirements-lock.txt`, `UPDATE_GITHUB.md` and the workflow. Delete obsolete result files before replacing `results/`; do not mix v3 figures with v4 tables.
-3. Run the tests and verify the supplied manifest before committing. To modify models later, edit the canonical Python source; regenerate the notebook using `python build_notebook.py`, run `python run_study.py` and verify the manifest. Never hand-edit a generated CSV or plot.
-4. Review `docs/SOURCE_MAP.md` and all model assumptions. Commit only after the repository owner accepts the scientific scope; no physical calibration has been established.
+## Version 4.1.0
 
-Example commands from an existing local clone (after merging files):
+This refinement preserves the v4 scientific model
+and numerical findings while improving validation,
+documentation and reproducibility.
 
-```sh
-python -m pip install -r requirements.txt
-python -m unittest discover -s tests -v
-python verify_manifest.py
-python build_notebook.py --check
-git status
-git add README.md UPDATE_GITHUB.md docs src tests results notebooks run_study.py requirements.txt requirements-lock.txt verify_manifest.py build_notebook.py .github/workflows/python-tests.yml
-git commit -m "Audit FSO assumptions, fix solver, expand reproducibility checks"
-git push
-```
+## Install dependencies
 
-The standalone Colab notebook is independently usable: Run all writes the project to a dedicated subdirectory, runs tests and experiments, and exports a merge ZIP. The GitHub repository has not been modified remotely by this delivery.
+    python -m pip install -r requirements.txt
+
+For the pinned reference environment:
+
+    python -m pip install -r requirements.txt -r requirements-lock.txt
+
+## Run automated verification
+
+    python -m unittest discover -s tests -v
+    python verify_manifest.py
+    python build_notebook.py --check
+
+## Numerical regression verification
+
+Preserve reference tables before generating new results.
+
+The following commands are for Linux or Google Colab:
+
+    REF=$(mktemp -d)
+    cp -r results/tables "$REF/tables"
+    FAST_MODE=0 python run_study.py
+    python compare_results.py "$REF/tables" results/tables
+    python verify_manifest.py
+
+Investigate numerical discrepancies before accepting
+new reference results.
+
+## Notebook regeneration
+
+After modifying canonical source or documentation:
+
+    python build_notebook.py
+    python build_notebook.py --check
+
+Do not edit the generated notebook independently.
+
+## GitHub update
+
+Extract the generated ZIP and upload its contents
+to the existing repository root.
+
+Do not upload the ZIP itself or an enclosing folder.
+Preserve the Git history and original attribution.
+
+## Scientific scope
+
+The project demonstrates conditional optical-power
+availability and robust receiver aperture design.
+
+No experimental calibration, communication-level
+BER validation or publication-level novelty is claimed.
+
+Further physical modeling remains future research.

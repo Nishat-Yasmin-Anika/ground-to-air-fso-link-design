@@ -1,16 +1,16 @@
 {
   "source_sha256": {
-    "src/atmosphere.py": "c9fcbb293a2448fd04103fe43a3f2d17234d57d631f0acc866c5f619e1b2c253",
-    "src/fso_link.py": "aa18bf4716fb9e7612a696c7c2e919a1dc1456e715ebb92d10a217219f2679a7",
+    "src/atmosphere.py": "77012dfa1d88bc8a7ca73c378db18a449aefe4026d72dc893db5572f8defb258",
+    "src/fso_link.py": "e1bd073598456a750ecb6808ed559152ca9d17be5eb8abde3a2bc853352dcc25",
     "run_study.py": "5ff000930f1b90f9e8050e8fcd45c934abec5e90ebe1f89e08007cb3ab3f864d",
     "tests/test_link.py": "900c09dce6d4c0c66c4f1203c1f7fdf4e273aa49b589ce063e7a37c9d6ff660e",
-    "tests/test_audit.py": "3e69c40dfc9dd86cbc0eacc60cd9c8ecab6585ef21d5223ee48ac771ade4b69a"
+    "tests/test_audit.py": "2f8ba2d1e4e4274d5856465d842f7a06fe8841f760da452384a2c854767ee910"
   },
   "files": [
     {
       "path": "README.md",
-      "bytes": 1548,
-      "sha256": "41bbab37e249be97603d225229624bfee970393a884bc6564aa1562b64bfd2ff"
+      "bytes": 5407,
+      "sha256": "0d1111e34c10f70161d11c4c7f8eb22719c8201f771e3c1622651506942e492f"
     },
     {
       "path": "figures/01_aperture_integral_validation.png",
@@ -20,7 +20,7 @@
     {
       "path": "figures/01_aperture_integral_validation.svg",
       "bytes": 42187,
-      "sha256": "7cc0bc8a554f43f84ce5eca458f8d9d9d21015df7257a664b9c6bb3d8cb1d1b7"
+      "sha256": "fa3d33b40c4648c8776e322ab10530c028e1fe5e0efd245a2c9d8a40e9760e92"
     },
     {
       "path": "figures/02_atmospheric_unit_interpretations.png",
@@ -30,7 +30,7 @@
     {
       "path": "figures/02_atmospheric_unit_interpretations.svg",
       "bytes": 40755,
-      "sha256": "7d70c7bc70ce5c7c2b494282a0cbd7d30c9cbcd3e44dc2c366af6eb47111a198"
+      "sha256": "627cce152ba1954834664ee460ec5d111cdad06bfb0b76279e17fd46163b186b"
     },
     {
       "path": "figures/03_availability_vs_aperture.png",
@@ -40,7 +40,7 @@
     {
       "path": "figures/03_availability_vs_aperture.svg",
       "bytes": 58207,
-      "sha256": "8a293fe0d7c47b23ea1ca40f95b5c39f02878254cc741546a3ac719b3f9b4fef"
+      "sha256": "726d133a8b391daa1b2bc209d7f7b9c99a1597f4f9af73720144d86eebb8fd61"
     },
     {
       "path": "figures/04_minimum_aperture_frontier.png",
@@ -50,7 +50,7 @@
     {
       "path": "figures/04_minimum_aperture_frontier.svg",
       "bytes": 46188,
-      "sha256": "8493c4e3be39622fdab9ca47ea0a0e85feefd2f55f95cc962fc6c83640365dae"
+      "sha256": "59293d36c2a65430500bbd7b19d624dca9728cd5e82b215f04e2598bd3409c8f"
     },
     {
       "path": "figures/05_weather_probability_shift.png",
@@ -60,7 +60,7 @@
     {
       "path": "figures/05_weather_probability_shift.svg",
       "bytes": 49529,
-      "sha256": "6bf6c6027f22c4c246923dfb63559cd6438f54a8b29c23e92b736591aff21114"
+      "sha256": "69f0e21f945d4f5c26d792bfba0dfe401272d3aa5529a05dce7abdbe2f0a9f39"
     },
     {
       "path": "figures/06_design_feasibility_map.png",
@@ -70,7 +70,7 @@
     {
       "path": "figures/06_design_feasibility_map.svg",
       "bytes": 199343,
-      "sha256": "b111270baba9153740791514c83c59ecbdd030fa76fd5b4a34921d372fd84df9"
+      "sha256": "6da40fe68885937f7136182db6b8c71e7c63232675d820e02ee5063a7758512b"
     },
     {
       "path": "figures/07_ablation.png",
@@ -80,7 +80,7 @@
     {
       "path": "figures/07_ablation.svg",
       "bytes": 48905,
-      "sha256": "92248fb98bfceba220032330ad6de8c74ff2673961d9ac62d47154c3eb97bdd6"
+      "sha256": "2d9b9365bddd7f09fe94fa996c597bc37c2e6644afe5167ee1c62b64989d9114"
     },
     {
       "path": "figures/08_monte_carlo_validation.png",
@@ -90,7 +90,7 @@
     {
       "path": "figures/08_monte_carlo_validation.svg",
       "bytes": 41966,
-      "sha256": "83fbe7cece29254ed581dae4675db955978750f9290f49caf0b10664bfaf5dcb"
+      "sha256": "0522fd3f499f6e8f2bb41f0c999fda0f6c625889ae3d56028116014242a6d6db"
     },
     {
       "path": "figures/09_atmospheric_feasibility_ceiling.png",
@@ -100,7 +100,7 @@
     {
       "path": "figures/09_atmospheric_feasibility_ceiling.svg",
       "bytes": 57480,
-      "sha256": "666c097c5cb807d711bd5e7fb11ff7616d9151eabb3a7fda3c530f2684953a70"
+      "sha256": "ec7ef8f3a4aebc7857cb07b2f0606e799dd6f240e7ba5309a97643accb2a89fc"
     },
     {
       "path": "figures/10_optimization_convention_sensitivity.png",
@@ -110,7 +110,7 @@
     {
       "path": "figures/10_optimization_convention_sensitivity.svg",
       "bytes": 77559,
-      "sha256": "46f365bbe82f05064fb653cf9b9258a59d810000783ad0f471ab2057db86d7d7"
+      "sha256": "5ce9d4898fd9990719e9005a8ba34055c0915b021517965007c19f6cafa41794"
     },
     {
       "path": "figures/11_model_and_target_sensitivity.png",
@@ -120,7 +120,7 @@
     {
       "path": "figures/11_model_and_target_sensitivity.svg",
       "bytes": 72178,
-      "sha256": "24b435fbfee0d6532bc8595866cf2ab3e86e333a862224e9eb7f55219b7f4a26"
+      "sha256": "e0c19f25939d5c72a3419f243731e5b0f455d92cf3182cb10e8009489a87e134"
     },
     {
       "path": "figures/12_fog_model_benchmark.png",
@@ -130,7 +130,7 @@
     {
       "path": "figures/12_fog_model_benchmark.svg",
       "bytes": 50941,
-      "sha256": "0e057843bc226e9a0ab93e36b8ba6863c9c2fa82576941c46b871e0141df792a"
+      "sha256": "21fa6b1453bfc20b9d3b4236524a30c3ba1d91780ae5e3843b78d6090ff86df7"
     },
     {
       "path": "metadata/environment.json",
@@ -144,8 +144,8 @@
     },
     {
       "path": "metadata/runtime.json",
-      "bytes": 231,
-      "sha256": "fdf380cb46053691874c88e515541d9b2a12fea51a32e5080b73b332e55ebcae"
+      "bytes": 227,
+      "sha256": "39a68bbf21a8a91bedbbf500d5b1cbcc6c16f15cc4ed86b47a1e803f37d6b86f"
     },
     {
       "path": "tables/01_weather_scenarios_and_conventions.csv",
@@ -169,8 +169,8 @@
     },
     {
       "path": "tables/05_monte_carlo_verification.csv",
-      "bytes": 469,
-      "sha256": "ec4f4fc1ce561a5518fb984fea4a08dd58438af21620cc62414d4a7e70d54213"
+      "bytes": 467,
+      "sha256": "f166d18c222718c730a2f4b9d729796d3c5fbfb4966534a371c2b60503cf10d8"
     },
     {
       "path": "tables/06_alternate_illustrative_weather_priors.csv",
